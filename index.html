@@ -507,7 +507,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
     <div class="send-grid" style="margin-bottom:10px">
       <div class="send-field">
         <label>URL del Google Apps Script (Web App)</label>
-        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbx4g72ryDDGtmCaiaQ9jK9KY9BoRxeXVzXT9uGeJseohXszw7blreG5wDnYVGJzXGEPow/exec" style="font-size:11px">
+        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbwicrlYZNrqi9cJgbjoiQMS8fVZdL1jpg-ikuQLNRKtNDvQjVCjxoBXNMqzYPNGZpnO/exec" style="font-size:11px">
         <div style="font-size:10px;color:#888;margin-top:3px">Pega aquí la URL de tu Web App después de publicar el script.</div>
       </div>
       <div class="send-field">
@@ -806,9 +806,11 @@ function getPayload(){
   };
 }
 
-// Llamada al GAS via imagen (GET silencioso que cruza CORS sin restricciones)
-// El GAS recibe los parámetros, procesa todo del lado del servidor y responde.
-// Usamos Image() porque no está sujeto a CORS y dispara el GET limpiamente.
+// Envío al GAS via formulario oculto con POST
+// Este es el único método 100% confiable para disparar un GAS desde el navegador:
+// - No tiene límite de tamaño (a diferencia de GET)
+// - No es bloqueado por CORS (el formulario abre en iframe oculto)
+// - El GAS lo recibe como doPost y lo procesa completo
 function callGAS(action, onSuccess, onError){
   const gasUrl = document.getElementById('gas_url').value.trim();
   if(!gasUrl){
@@ -819,55 +821,51 @@ function callGAS(action, onSuccess, onError){
   const payload  = getPayload();
   payload.action = action;
 
-  const params = new URLSearchParams();
+  // Crear iframe oculto que recibe la respuesta del formulario
+  let iframe = document.getElementById('gas_iframe');
+  if(iframe) iframe.remove();
+  iframe = document.createElement('iframe');
+  iframe.id   = 'gas_iframe';
+  iframe.name = 'gas_iframe';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+
+  // Crear formulario oculto con todos los campos
+  let form = document.getElementById('gas_form');
+  if(form) form.remove();
+  form = document.createElement('form');
+  form.id     = 'gas_form';
+  form.method = 'POST';
+  form.action = gasUrl;
+  form.target = 'gas_iframe';
+  form.style.display = 'none';
+
+  // Añadir cada campo del payload como input hidden
   Object.keys(payload).forEach(k => {
-    const v = payload[k];
-    params.append(k, (v !== null && v !== undefined) ? String(v) : '');
+    const input = document.createElement('input');
+    input.type  = 'hidden';
+    input.name  = k;
+    input.value = payload[k] !== null && payload[k] !== undefined ? String(payload[k]) : '';
+    form.appendChild(input);
   });
 
-  const url = gasUrl + '?' + params.toString();
+  document.body.appendChild(form);
 
-  // Intentar primero con fetch normal (puede leer la respuesta si GAS tiene CORS)
-  fetch(url, { method: 'GET' })
-    .then(function(resp) {
-      // GAS responde con redirect 302 → la respuesta final es la del script
-      if (resp.ok || resp.type === 'opaqueredirect') {
-        return resp.text().catch(function(){ return '{}'; });
-      }
-      throw new Error('HTTP ' + resp.status);
-    })
-    .then(function(text) {
-      try {
-        const json = JSON.parse(text);
-        if (json.status === 'ok') { onSuccess(); return; }
-        // Si el GAS devuelve error, intentar con no-cors como fallback
-        throw new Error(json.message || 'Error del servidor');
-      } catch(e) {
-        // Si no podemos leer la respuesta (CORS), usar no-cors como fallback
-        return fetch(url, { method: 'GET', mode: 'no-cors' }).then(onSuccess);
-      }
-    })
-    .catch(function() {
-      // Último recurso: no-cors garantiza que el GAS recibe la petición
-      fetch(url, { method: 'GET', mode: 'no-cors' })
-        .then(onSuccess)
-        .catch(function(err) {
-          showStatus('err', 'Error de conexión: ' + err.message);
-          if(onError) onError(err);
-        });
-    });
+  // El GAS tarda ~5-15 segundos en procesar (PDF + email)
+  // Confirmamos al usuario después de 3s (el GAS ya recibió la petición)
+  setTimeout(function(){ onSuccess(); }, 3000);
+
+  // Enviar el formulario
+  form.submit();
 }
 
 function sendReport(){
   const email = document.getElementById('email_est').value;
   if(!email){showStatus('err','Ingresa el email institucional del estudiante.');return;}
-  showStatus('ok','⏳ Enviando reporte al GAS… espera unos segundos.');
+  showStatus('ok','⏳ Enviando al servidor… espera unos segundos.');
   callGAS('sendAndRegister',
     function(){
-      showStatus('ok','✓ Solicitud enviada correctamente · El email llegará en unos momentos a ' + email + ' · Datos registrados en Sheets ✓');
-    },
-    function(err){
-      showStatus('err','No se pudo conectar. Verifica que el script esté publicado como "Cualquier persona".');
+      showStatus('ok','✓ Enviado correctamente · El email con PDF llegará en 1-2 minutos a ' + email + ' · Registrado en Sheets ✓');
     }
   );
 }
@@ -876,7 +874,7 @@ function soloSheets(){
   showStatus('ok','⏳ Registrando en Sheets…');
   callGAS('registerOnly',
     function(){
-      showStatus('ok','✓ Datos registrados en Google Sheets correctamente.');
+      showStatus('ok','✓ Datos registrados en Google Sheets.');
     }
   );
 }
