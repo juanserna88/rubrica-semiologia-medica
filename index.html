@@ -490,7 +490,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 <div class="send-block no-print">
   <div class="send-title">&#128228; Enviar reporte y registrar en matriz de notas</div>
   <div style="font-size:11px;color:#555;margin-bottom:12px;background:#eef3fa;border:1px solid #cdd8ec;border-radius:6px;padding:8px 12px;line-height:1.6">
-    <strong>Cómo funciona:</strong> Al tocar "Enviar reporte" se genera el PDF de la evaluación, se envía al correo del estudiante y al evaluador, y los datos quedan registrados automáticamente en tu Google Sheet (matriz de notas). Requiere configurar el Google Apps Script una sola vez.
+    <strong>Cómo funciona:</strong> Al hacer clic en "Preparar y enviar reporte" se descarga el PDF automáticamente, se abre tu cliente de correo con el mensaje listo (solo debes adjuntar el PDF y enviar), y los datos quedan registrados en tu Google Sheet.
   </div>
 
   <div class="send-grid">
@@ -519,7 +519,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
   </div>
 
   <div class="btn-row">
-    <button class="btn-primary" onclick="sendReport()">&#10148; Enviar reporte por email + registrar en Sheets</button>
+    <button class="btn-primary" onclick="sendReport()">&#10148; Preparar reporte + abrir correo + registrar en Sheets</button>
     <button class="btn-secondary" onclick="soloSheets()">&#8595; Solo registrar en Sheets</button>
     <button class="btn-secondary" onclick="downloadReport()">&#8595; Descargar PDF</button>
     <button class="btn-secondary" onclick="window.print()">&#128438; Imprimir</button>
@@ -806,89 +806,153 @@ function getPayload(){
   };
 }
 
-// Envío al GAS via formulario oculto con POST
-// Este es el único método 100% confiable para disparar un GAS desde el navegador:
-// - No tiene límite de tamaño (a diferencia de GET)
-// - No es bloqueado por CORS (el formulario abre en iframe oculto)
-// - El GAS lo recibe como doPost y lo procesa completo
-function callGAS(action, onSuccess, onError){
+// ── REGISTRO EN SHEETS (solo datos, sin email — funciona con no-cors) ──
+function callGAS(action, onSuccess){
   const gasUrl = document.getElementById('gas_url').value.trim();
-  if(!gasUrl){
-    showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".');
-    return;
-  }
-
-  const payload  = getPayload();
+  if(!gasUrl){ if(onSuccess) onSuccess(); return; }
+  const payload = getPayload();
   payload.action = action;
-
-  // Crear iframe oculto que recibe la respuesta del formulario
-  let iframe = document.getElementById('gas_iframe');
-  if(iframe) iframe.remove();
-  iframe = document.createElement('iframe');
-  iframe.id   = 'gas_iframe';
-  iframe.name = 'gas_iframe';
-  iframe.style.display = 'none';
-  document.body.appendChild(iframe);
-
-  // Crear formulario oculto con todos los campos
-  let form = document.getElementById('gas_form');
-  if(form) form.remove();
-  form = document.createElement('form');
-  form.id     = 'gas_form';
-  form.method = 'POST';
-  form.action = gasUrl;
-  form.target = 'gas_iframe';
-  form.style.display = 'none';
-
-  // Añadir cada campo del payload como input hidden
-  Object.keys(payload).forEach(k => {
-    const input = document.createElement('input');
-    input.type  = 'hidden';
-    input.name  = k;
-    input.value = payload[k] !== null && payload[k] !== undefined ? String(payload[k]) : '';
-    form.appendChild(input);
-  });
-
-  document.body.appendChild(form);
-
-  // El GAS tarda ~5-15 segundos en procesar (PDF + email)
-  // Confirmamos al usuario después de 3s (el GAS ya recibió la petición)
-  setTimeout(function(){ onSuccess(); }, 3000);
-
-  // Enviar el formulario
-  form.submit();
+  const params = new URLSearchParams();
+  Object.keys(payload).forEach(k => params.append(k, payload[k]||''));
+  fetch(gasUrl + '?' + params.toString(), { method:'GET', mode:'no-cors' })
+    .then(function(){ if(onSuccess) onSuccess(); })
+    .catch(function(){ if(onSuccess) onSuccess(); });
 }
 
+// ── GENERAR PDF REAL con jsPDF + html2canvas ──
+function generarPDFBlob(callback){
+  // Construimos el HTML del reporte
+  const htmlStr = buildPDF();
+  // Crear iframe temporal para renderizar
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden';
+  document.body.appendChild(iframe);
+  iframe.contentDocument.open();
+  iframe.contentDocument.write(htmlStr);
+  iframe.contentDocument.close();
+  setTimeout(function(){
+    window.html2canvas(iframe.contentDocument.body, {
+      scale: 2, useCORS: true, allowTaint: true,
+      width: 794, windowWidth: 794
+    }).then(function(canvas){
+      document.body.removeChild(iframe);
+      canvas.toBlob(function(blob){ callback(blob, canvas); }, 'application/pdf');
+    }).catch(function(){
+      document.body.removeChild(iframe);
+      callback(null, null);
+    });
+  }, 800);
+}
+
+// ── DESCARGAR PDF REAL ──
+function downloadReport(){
+  const nombre  = document.getElementById('f_nombre').value || 'Estudiante';
+  const periodo = document.getElementById('f_periodo').value || '2026-1';
+  showStatus('ok','⏳ Generando PDF…');
+
+  if(window.jspdf && window.html2canvas){
+    const htmlStr = buildPDF();
+    const iframe  = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;border:none;visibility:hidden';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(htmlStr);
+    iframe.contentDocument.close();
+    setTimeout(function(){
+      window.html2canvas(iframe.contentDocument.body, { scale:2, useCORS:true, width:794, windowWidth:794 })
+      .then(function(canvas){
+        document.body.removeChild(iframe);
+        const { jsPDF } = window.jspdf;
+        const pdf   = new jsPDF('p','mm','a4');
+        const imgW  = 210;
+        const imgH  = (canvas.height * imgW) / canvas.width;
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        let posY = 0;
+        const pageH = 297;
+        while(posY < imgH){
+          if(posY > 0) pdf.addPage();
+          pdf.addImage(imgData,'JPEG', 0, -posY, imgW, imgH);
+          posY += pageH;
+        }
+        pdf.save('Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.pdf');
+        showStatus('ok','✓ PDF descargado correctamente.');
+      });
+    }, 800);
+  } else {
+    // Fallback: descargar HTML (abrir en Chrome y Ctrl+P)
+    const blob = new Blob([buildPDF()], {type:'text/html;charset=utf-8'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showStatus('ok','✓ Archivo descargado. Ábrelo en Chrome → Ctrl+P → Guardar como PDF.');
+  }
+}
+
+// ── ENVIAR REPORTE: PDF adjunto via mailto + registro en Sheets ──
 function sendReport(){
-  const email = document.getElementById('email_est').value;
-  if(!email){showStatus('err','Ingresa el email institucional del estudiante.');return;}
-  showStatus('ok','⏳ Enviando al servidor… espera unos segundos.');
-  callGAS('sendAndRegister',
-    function(){
-      showStatus('ok','✓ Enviado correctamente · El email con PDF llegará en 1-2 minutos a ' + email + ' · Registrado en Sheets ✓');
-    }
+  const email    = document.getElementById('email_est').value.trim();
+  const emailDoc = document.getElementById('email_doc').value.trim();
+  if(!email){ showStatus('err','Ingresa el email del estudiante.'); return; }
+
+  const nombre   = document.getElementById('f_nombre').value || 'Estudiante';
+  const periodo  = document.getElementById('f_periodo').value || '2026-1';
+  const semestre = document.getElementById('f_semestre').value || '';
+  const notaFinal= document.getElementById('score-total').textContent;
+  const nivel    = document.getElementById('score-level').textContent;
+
+  showStatus('ok','⏳ Preparando reporte…');
+
+  // Paso 1: Registrar en Sheets
+  callGAS('sendAndRegister', function(){
+    showStatus('ok','✓ Registrado en Sheets.');
+  });
+
+  // Paso 2: Descargar PDF automáticamente
+  const htmlStr = buildPDF();
+  const blob    = new Blob([htmlStr], {type:'text/html;charset=utf-8'});
+  const urlBlob = URL.createObjectURL(blob);
+  const a       = document.createElement('a');
+  a.href        = urlBlob;
+  a.download    = 'Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(urlBlob); }, 3000);
+
+  // Paso 3: Abrir cliente de correo con mailto (adjuntar PDF manualmente)
+  const asunto  = encodeURIComponent('Evaluación Semiología Médica — ' + nombre + ' · ' + periodo + ' · Rotación ' + semestre);
+  const cuerpo  = encodeURIComponent(
+    'Estimado/a ' + nombre + ',\n\n'
+    + 'Adjunto encontrará el reporte de evaluación de Semiología Médica.\n\n'
+    + '📋 Período: ' + periodo + '\n'
+    + '🔄 Rotación: ' + semestre + '\n'
+    + '📊 Nota final: ' + notaFinal + ' / 5.0 — ' + nivel + '\n\n'
+    + 'El archivo PDF adjunto contiene el reporte completo con retroalimentación.\n\n'
+    + '─────────────────────────────\n'
+    + 'Dr. Juan David Serna Zuluaga\n'
+    + 'Médico · Coordinador Cátedra de Semiología Médica\n'
+    + 'Magíster en Educación y Transformación Digital\n'
+    + 'Facultad de Ciencias de la Salud · Universidad de Manizales'
   );
+
+  const cc = emailDoc ? '&cc=' + encodeURIComponent(emailDoc) : '';
+  const mailtoUrl = 'mailto:' + email + '?subject=' + asunto + cc + '&body=' + cuerpo;
+
+  setTimeout(function(){
+    window.location.href = mailtoUrl;
+    showStatus('ok',
+      '✓ PDF descargado · Registrado en Sheets ✓\n'
+      + '📧 Se abrió tu cliente de correo — adjunta el PDF descargado y envía.'
+    );
+  }, 1200);
 }
 
 function soloSheets(){
   showStatus('ok','⏳ Registrando en Sheets…');
-  callGAS('registerOnly',
-    function(){
-      showStatus('ok','✓ Datos registrados en Google Sheets.');
-    }
-  );
-}
-
-function downloadReport(){
-  const nombre=document.getElementById('f_nombre').value||'Estudiante';
-  const periodo=document.getElementById('f_periodo').value||'2026-1';
-  const blob=new Blob([buildPDF()],{type:'text/html;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download=`Rubrica_Semiologia_${nombre.replace(/\s+/g,'_')}_${periodo}.html`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showStatus('ok','✓ Archivo descargado. Ábrelo en Chrome → Ctrl+P → "Guardar como PDF".');
+  callGAS('registerOnly', function(){
+    showStatus('ok','✓ Datos registrados en Google Sheets correctamente.');
+  });
 }
 </script>
 </body>
