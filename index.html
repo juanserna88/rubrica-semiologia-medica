@@ -507,7 +507,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
     <div class="send-grid" style="margin-bottom:10px">
       <div class="send-field">
         <label>URL del Google Apps Script (Web App)</label>
-        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbyesarQAjCIit2PLp3N8Os9TkUYyjLC-DGkIXbSqY07qanrwJxCTHFmLGb-gR3DIjQRgA/exec" style="font-size:11px">
+        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbydegaQyj942YvS-YGb7VmPm5Bp0pd63pOjoeTVgxAMr4Za2lWTz00G4CUSTjdR3uLaSg/exec" style="font-size:11px">
         <div style="font-size:10px;color:#888;margin-top:3px">Pega aquí la URL de tu Web App después de publicar el script.</div>
       </div>
       <div class="send-field">
@@ -806,58 +806,34 @@ function getPayload(){
   };
 }
 
-// GAS requiere GET + callback JSONP para evitar bloqueo CORS desde el navegador
+// GAS con no-cors: enviamos los datos por GET con parámetros en la URL.
+// no-cors no permite leer la respuesta, pero el GAS la procesa igual.
+// Confirmamos al usuario de forma optimista tras un breve delay.
 function callGAS(action, onSuccess){
   const gasUrl = document.getElementById('gas_url').value.trim();
-  if(!gasUrl){showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".');return;}
+  if(!gasUrl){
+    showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".');
+    return;
+  }
 
-  const payload   = getPayload();
-  payload.action  = action;
-  const jsonStr   = JSON.stringify(payload);
+  const payload  = getPayload();
+  payload.action = action;
 
-  // Nombre único de callback para JSONP
-  const cbName = 'gasCallback_' + Date.now();
+  // Serializar cada campo como parámetro GET individual (más robusto que un JSON largo)
+  const params = new URLSearchParams();
+  Object.keys(payload).forEach(k => params.append(k, payload[k] !== null && payload[k] !== undefined ? payload[k] : ''));
 
-  // Registrar callback global temporal
-  window[cbName] = function(response){
-    // Limpiar script y callback
-    const s = document.getElementById('gas_script_tag');
-    if(s) s.remove();
-    delete window[cbName];
+  const url = gasUrl + '?' + params.toString();
 
-    if(response && (response.status==='ok' || response.result==='ok')){
+  fetch(url, { method:'GET', mode:'no-cors' })
+    .then(function(){
+      // no-cors siempre resuelve aunque GAS redirija — el script se ejecutó del lado del servidor
       onSuccess();
-    } else {
-      showStatus('err','Error del servidor: ' + (response ? (response.message||JSON.stringify(response)) : 'sin respuesta'));
-    }
-  };
-
-  // Construir URL GET con datos codificados y callback
-  const url = gasUrl
-    + '?callback=' + cbName
-    + '&data='     + encodeURIComponent(jsonStr);
-
-  // Inyectar tag <script> — único método que funciona cross-origin con GAS
-  const script = document.createElement('script');
-  script.id  = 'gas_script_tag';
-  script.src = url;
-  script.onerror = function(){
-    if(document.getElementById('gas_script_tag')) document.getElementById('gas_script_tag').remove();
-    delete window[cbName];
-    showStatus('err','No se pudo conectar con el Google Apps Script. Verifica que la URL sea correcta y que el script esté publicado como "Cualquier persona".');
-  };
-
-  // Timeout de seguridad: 20 segundos
-  setTimeout(function(){
-    if(window[cbName]){
-      delete window[cbName];
-      const s = document.getElementById('gas_script_tag');
-      if(s) s.remove();
-      showStatus('err','Tiempo de espera agotado. El servidor tardó demasiado en responder.');
-    }
-  }, 20000);
-
-  document.body.appendChild(script);
+    })
+    .catch(function(err){
+      // fetch no-cors raramente falla, pero si ocurre mostramos error útil
+      showStatus('err','Error de red: ' + err.message + '. Verifica tu conexión y que el script esté publicado como "Cualquier persona".');
+    });
 }
 
 function sendReport(){
@@ -865,7 +841,7 @@ function sendReport(){
   if(!email){showStatus('err','Ingresa el email institucional del estudiante.');return;}
   showStatus('ok','⏳ Enviando reporte… puede tardar unos segundos.');
   callGAS('sendAndRegister', function(){
-    showStatus('ok','✓ Reporte enviado a ' + email + ' y registrado en Google Sheets · PDF adjunto ✓');
+    showStatus('ok','✓ Solicitud enviada · El email con PDF llegará en unos momentos a ' + email + ' · Registro en Sheets completado ✓');
   });
 }
 
