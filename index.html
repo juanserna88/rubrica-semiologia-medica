@@ -814,24 +814,27 @@ function sendReport(){
   if(!email){ showStatus('err','⚠ Ingresa el email institucional del estudiante.'); return; }
   if(!gasUrl){ showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".'); return; }
 
-  showStatus('ok','⏳ Enviando reporte por correo electrónico…');
+  showStatus('ok','⏳ Enviando reporte… esto puede tardar 5-10 segundos.');
 
   const payload  = getPayload();
   payload.action = 'sendOnly';
   const params   = new URLSearchParams();
   Object.keys(payload).forEach(k => params.append(k, String(payload[k]||'')));
 
-  fetch(gasUrl + '?' + params.toString(), { method:'GET', mode:'no-cors' })
-    .then(function(){
-      showStatus('ok',
-        '✓ Correo enviado a ' + email
-        + (emailDoc ? ' · Copia a ' + emailDoc : '')
-        + ' · Datos registrados en Sheets ✓'
-      );
-    })
-    .catch(function(e){
-      showStatus('err','Error de conexión: ' + e.message);
-    });
+  const url = gasUrl + '?' + params.toString();
+
+  // Abrir en ventana oculta — único método que cruza CORS con GAS
+  const win = window.open(url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
+
+  // El GAS tarda ~5s en procesar. Cerramos la ventana y confirmamos.
+  setTimeout(function(){
+    try { if(win && !win.closed) win.close(); } catch(e){}
+    showStatus('ok',
+      '✓ Correo enviado a ' + email
+      + (emailDoc ? ' · Copia a ' + emailDoc : '')
+      + ' · Datos registrados en Sheets ✓'
+    );
+  }, 6000);
 }
 
 // ── SOLO REGISTRAR EN SHEETS ──
@@ -843,9 +846,12 @@ function soloSheets(){
   payload.action = 'registerOnly';
   const params   = new URLSearchParams();
   Object.keys(payload).forEach(k => params.append(k, String(payload[k]||'')));
-  fetch(gasUrl + '?' + params.toString(), { method:'GET', mode:'no-cors' })
-    .then(function(){ showStatus('ok','✓ Datos registrados en Google Sheets correctamente.'); })
-    .catch(function(e){ showStatus('err','Error: ' + e.message); });
+  const url = gasUrl + '?' + params.toString();
+  const win = window.open(url, '_blank', 'width=1,height=1,left=-1000,top=-1000');
+  setTimeout(function(){
+    try { if(win && !win.closed) win.close(); } catch(e){}
+    showStatus('ok','✓ Datos registrados en Google Sheets correctamente.');
+  }, 4000);
 }
 
 // ── DESCARGAR HTML (para imprimir como PDF desde Chrome) ──
