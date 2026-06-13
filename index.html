@@ -145,6 +145,83 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 .firma-nombre{font-size:14px;font-weight:700;color:white;margin-bottom:2px}
 .firma-cargo{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:1px}
 .firma-uni{font-size:10px;color:rgba(255,255,255,.5);margin-top:4px}
+
+/* ══════════════════════════════════════
+   RESPONSIVE MÓVIL
+══════════════════════════════════════ */
+@media (max-width:640px){
+
+  /* PAGE */
+  .page{margin:0;border-radius:0;box-shadow:none}
+  .body{padding:14px 14px}
+
+  /* HEADER */
+  .header{padding:12px 14px;gap:10px}
+  .header-text h1{font-size:13px}
+  .header-text h2{font-size:10px}
+  .header-text h3{font-size:9px;display:none}
+
+  /* IDENTIFICACIÓN — todo en 1 columna */
+  .id-grid-2,.id-grid-3,.id-grid-4{grid-template-columns:1fr}
+
+  /* GRUPOS */
+  .group-header{padding:10px 12px}
+  .group-title{font-size:12px}
+  .group-weight{font-size:10px;padding:2px 8px}
+  .subgroup-header{padding:7px 12px}
+
+  /* LIKERT — apilado verticalmente en móvil */
+  .likert-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,auto)}
+  .likert-cell{border-left:none;border-top:1px solid #dde2ea;padding:10px 14px;display:flex;align-items:flex-start;gap:10px}
+  .likert-cell:first-child{border-top:none}
+  .likert-cell .badge{margin-bottom:0;flex-shrink:0;min-width:34px;text-align:center}
+  .likert-cell .opt-name{font-size:12px;margin-bottom:2px}
+  .likert-cell .opt-desc{font-size:11px}
+  .likert-cell-content{flex:1}
+
+  /* NOTA ROW */
+  .nota-row{padding:8px 14px;flex-wrap:wrap;gap:6px}
+  .nota-row input[type="number"]{width:90px;font-size:16px}
+  .nota-row .nota-hint{font-size:11px}
+  .nota-row .auto-badge{font-size:11px;padding:3px 10px}
+
+  /* RETROALIMENTACIÓN */
+  .retro-grid{grid-template-columns:1fr}
+  .retro-block{padding:12px}
+  .retro-block textarea{min-height:80px;font-size:13px}
+
+  /* SCORE PANEL */
+  .score-panel{flex-direction:column;align-items:flex-start;gap:12px;padding:14px 16px}
+  .score-big{font-size:48px}
+  .score-bars{width:100%;min-width:unset}
+  .bar-label{width:140px;font-size:10px}
+
+  /* SEND BLOCK */
+  .send-block{padding:12px}
+  .send-grid{grid-template-columns:1fr}
+  .btn-row{flex-direction:column}
+  .btn-primary,.btn-secondary{width:100%;padding:12px 18px;font-size:13px;text-align:center}
+
+  /* FIRMA */
+  .firma-block{padding:14px 14px;gap:12px}
+  .firma-nombre{font-size:13px}
+  .firma-cargo{font-size:10px}
+  .firma-uni{font-size:9px}
+
+  /* CONFIG PANEL */
+  #config-panel .send-grid{grid-template-columns:1fr}
+
+  /* DIVIDER */
+  .divider{margin:14px 0}
+}
+
+@media (max-width:400px){
+  .header-text h1{font-size:12px}
+  .group-title{font-size:11px}
+  .score-big{font-size:40px}
+  .bar-label{width:110px}
+  .likert-cell .opt-desc{font-size:10px}
+}
 </style>
 </head>
 <body>
@@ -215,20 +292,20 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
     <div class="rubric-card">
       <div class="likert-grid" id="g_cteor">
         <label class="likert-cell cell-s"  onclick="sel('cteor','s',5.0)"><input type="radio" name="cteor">
-          <div class="badge">5.0</div><div class="opt-name">Sobresaliente</div>
-          <div class="opt-desc">Domina los fundamentos teóricos y fisiopatológicos. Relaciona con precisión mecanismos de enfermedad, signos y síntomas. Aplica correctamente los conceptos semiológicos (síntoma, signo, síndrome, enfermedad) sin errores conceptuales.</div>
+          <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
+          <div class="opt-desc">Domina los fundamentos teóricos y fisiopatológicos. Relaciona con precisión mecanismos de enfermedad, signos y síntomas. Aplica correctamente los conceptos semiológicos (síntoma, signo, síndrome, enfermedad) sin errores conceptuales.</div></div>
         </label>
         <label class="likert-cell cell-sa" onclick="sel('cteor','sa',4.0)"><input type="radio" name="cteor">
-          <div class="badge">4.0</div><div class="opt-name">Satisfactorio</div>
-          <div class="opt-desc">Maneja los fundamentos esenciales con errores menores que no afectan el razonamiento clínico global. Conoce los conceptos semiológicos básicos con imprecisiones terminológicas menores.</div>
+          <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
+          <div class="opt-desc">Maneja los fundamentos esenciales con errores menores que no afectan el razonamiento clínico global. Conoce los conceptos semiológicos básicos con imprecisiones terminológicas menores.</div></div>
         </label>
         <label class="likert-cell cell-ed" onclick="sel('cteor','ed',3.0)"><input type="radio" name="cteor">
-          <div class="badge">3.0</div><div class="opt-name">En desarrollo</div>
-          <div class="opt-desc">Conocimiento básico con vacíos en la correlación fisiopatológica. Confunde algunos conceptos semiológicos fundamentales. Requiere orientación para establecer relaciones mecanismo-síntoma.</div>
+          <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
+          <div class="opt-desc">Conocimiento básico con vacíos en la correlación fisiopatológica. Confunde algunos conceptos semiológicos fundamentales. Requiere orientación para establecer relaciones mecanismo-síntoma.</div></div>
         </label>
         <label class="likert-cell cell-ns" onclick="sel('cteor','ns',1.0)"><input type="radio" name="cteor">
-          <div class="badge">1.0</div><div class="opt-name">No satisfactorio</div>
-          <div class="opt-desc">Errores conceptuales fundamentales que comprometen el razonamiento clínico. Desconoce o aplica de forma errónea los conceptos semiológicos básicos.</div>
+          <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
+          <div class="opt-desc">Errores conceptuales fundamentales que comprometen el razonamiento clínico. Desconoce o aplica de forma errónea los conceptos semiológicos básicos.</div></div>
         </label>
       </div>
       <div class="nota-row">
@@ -263,20 +340,20 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
       <div class="rubric-card">
         <div class="likert-grid" id="g_hc">
           <label class="likert-cell cell-s"  onclick="sel('hc','s',5.0)"><input type="radio" name="hc">
-            <div class="badge">5.0</div><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Elabora la historia clínica con estructura completa: motivo de consulta, HEA, antecedentes y revisión por sistemas. Usa lenguaje técnico preciso, sin omisiones relevantes.</div>
+            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
+            <div class="opt-desc">Elabora la historia clínica con estructura completa: motivo de consulta, HEA, antecedentes y revisión por sistemas. Usa lenguaje técnico preciso, sin omisiones relevantes.</div></div>
           </label>
           <label class="likert-cell cell-sa" onclick="sel('hc','sa',4.0)"><input type="radio" name="hc">
-            <div class="badge">4.0</div><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Construye la historia clínica con estructura adecuada; omisiones menores en algunos componentes sin impacto significativo en la comprensión del caso clínico.</div>
+            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
+            <div class="opt-desc">Construye la historia clínica con estructura adecuada; omisiones menores en algunos componentes sin impacto significativo en la comprensión del caso clínico.</div></div>
           </label>
           <label class="likert-cell cell-ed" onclick="sel('hc','ed',3.0)"><input type="radio" name="hc">
-            <div class="badge">3.0</div><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Historia clínica incompleta o con errores de secuencia; requiere orientación docente para incluir todos los componentes esenciales del interrogatorio clínico.</div>
+            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
+            <div class="opt-desc">Historia clínica incompleta o con errores de secuencia; requiere orientación docente para incluir todos los componentes esenciales del interrogatorio clínico.</div></div>
           </label>
           <label class="likert-cell cell-ns" onclick="sel('hc','ns',1.0)"><input type="radio" name="hc">
-            <div class="badge">1.0</div><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">No logra elaborar una historia clínica organizada. Ausencia de estructura básica o información clínica crítica que impide la comprensión del caso.</div>
+            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
+            <div class="opt-desc">No logra elaborar una historia clínica organizada. Ausencia de estructura básica o información clínica crítica que impide la comprensión del caso.</div></div>
           </label>
         </div>
         <div class="nota-row">
@@ -297,20 +374,20 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
       <div class="rubric-card">
         <div class="likert-grid" id="g_hab">
           <label class="likert-cell cell-s"  onclick="sel('hab','s',5.0)"><input type="radio" name="hab">
-            <div class="badge">5.0</div><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Realiza exploración física sistemática e interpreta hallazgos con precisión semiológica. Integra datos para formular hipótesis diagnósticas coherentes en tiempo real. Presenta el caso con claridad, síntesis y lenguaje médico apropiado.</div>
+            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
+            <div class="opt-desc">Realiza exploración física sistemática e interpreta hallazgos con precisión semiológica. Integra datos para formular hipótesis diagnósticas coherentes en tiempo real. Presenta el caso con claridad, síntesis y lenguaje médico apropiado.</div></div>
           </label>
           <label class="likert-cell cell-sa" onclick="sel('hab','sa',4.0)"><input type="radio" name="hab">
-            <div class="badge">4.0</div><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Exploración física adecuada con errores menores en interpretación. Formula hipótesis con guía docente puntual. Presenta el caso de forma ordenada con algunos problemas de síntesis.</div>
+            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
+            <div class="opt-desc">Exploración física adecuada con errores menores en interpretación. Formula hipótesis con guía docente puntual. Presenta el caso de forma ordenada con algunos problemas de síntesis.</div></div>
           </label>
           <label class="likert-cell cell-ed" onclick="sel('hab','ed',3.0)"><input type="radio" name="hab">
-            <div class="badge">3.0</div><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Exploración física incompleta o técnica deficiente. Dificultad para integrar datos y formular hipótesis. Presentación desorganizada; requiere orientación docente permanente.</div>
+            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
+            <div class="opt-desc">Exploración física incompleta o técnica deficiente. Dificultad para integrar datos y formular hipótesis. Presentación desorganizada; requiere orientación docente permanente.</div></div>
           </label>
           <label class="likert-cell cell-ns" onclick="sel('hab','ns',1.0)"><input type="radio" name="hab">
-            <div class="badge">1.0</div><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">No realiza exploración física sistemática ni interpreta signos clínicos. No articula razonamiento clínico coherente. No logra presentar el caso de forma comprensible.</div>
+            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
+            <div class="opt-desc">No realiza exploración física sistemática ni interpreta signos clínicos. No articula razonamiento clínico coherente. No logra presentar el caso de forma comprensible.</div></div>
           </label>
         </div>
         <div class="nota-row">
@@ -346,20 +423,20 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
       <div class="rubric-card">
         <div class="likert-grid" id="g_quiz">
           <label class="likert-cell cell-s"  onclick="sel('quiz','s',5.0)"><input type="radio" name="quiz">
-            <div class="badge">5.0</div><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Calificación ≥ 4.5. Demuestra dominio conceptual sólido, integración teórico-clínica y capacidad analítica en la resolución de preguntas.</div>
+            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
+            <div class="opt-desc">Calificación ≥ 4.5. Demuestra dominio conceptual sólido, integración teórico-clínica y capacidad analítica en la resolución de preguntas.</div></div>
           </label>
           <label class="likert-cell cell-sa" onclick="sel('quiz','sa',4.0)"><input type="radio" name="quiz">
-            <div class="badge">4.0</div><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Calificación entre 3.5 y 4.4. Manejo adecuado de los contenidos con errores menores que no comprometen la comprensión global.</div>
+            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
+            <div class="opt-desc">Calificación entre 3.5 y 4.4. Manejo adecuado de los contenidos con errores menores que no comprometen la comprensión global.</div></div>
           </label>
           <label class="likert-cell cell-ed" onclick="sel('quiz','ed',3.0)"><input type="radio" name="quiz">
-            <div class="badge">3.0</div><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Calificación entre 3.0 y 3.4. Conocimiento parcial con vacíos en áreas específicas; requiere refuerzo conceptual dirigido.</div>
+            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
+            <div class="opt-desc">Calificación entre 3.0 y 3.4. Conocimiento parcial con vacíos en áreas específicas; requiere refuerzo conceptual dirigido.</div></div>
           </label>
           <label class="likert-cell cell-ns" onclick="sel('quiz','ns',1.0)"><input type="radio" name="quiz">
-            <div class="badge">1.0</div><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">Calificación &lt; 3.0. Vacíos conceptuales significativos que requieren intervención tutorial y refuerzo de los contenidos fundamentales.</div>
+            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
+            <div class="opt-desc">Calificación &lt; 3.0. Vacíos conceptuales significativos que requieren intervención tutorial y refuerzo de los contenidos fundamentales.</div></div>
           </label>
         </div>
         <div class="nota-row">
@@ -380,20 +457,20 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
       <div class="rubric-card">
         <div class="likert-grid" id="g_sim">
           <label class="likert-cell cell-s"  onclick="sel('sim','s',5.0)"><input type="radio" name="sim">
-            <div class="badge">5.0</div><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Desempeño óptimo en el escenario simulado: aborda correctamente el caso, aplica el razonamiento clínico, usa lenguaje médico preciso y toma decisiones diagnósticas acertadas sin apoyos externos.</div>
+            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
+            <div class="opt-desc">Desempeño óptimo en el escenario simulado: aborda correctamente el caso, aplica el razonamiento clínico, usa lenguaje médico preciso y toma decisiones diagnósticas acertadas sin apoyos externos.</div></div>
           </label>
           <label class="likert-cell cell-sa" onclick="sel('sim','sa',4.0)"><input type="radio" name="sim">
-            <div class="badge">4.0</div><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Aborda el escenario con desempeño adecuado; errores menores en la secuencia o en la toma de decisiones que no comprometen el resultado global de la evaluación.</div>
+            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
+            <div class="opt-desc">Aborda el escenario con desempeño adecuado; errores menores en la secuencia o en la toma de decisiones que no comprometen el resultado global de la evaluación.</div></div>
           </label>
           <label class="likert-cell cell-ed" onclick="sel('sim','ed',3.0)"><input type="radio" name="sim">
-            <div class="badge">3.0</div><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Dificultades en la ejecución del escenario: errores relevantes en el abordaje clínico, el razonamiento o la comunicación. Requiere retroalimentación inmediata del evaluador.</div>
+            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
+            <div class="opt-desc">Dificultades en la ejecución del escenario: errores relevantes en el abordaje clínico, el razonamiento o la comunicación. Requiere retroalimentación inmediata del evaluador.</div></div>
           </label>
           <label class="likert-cell cell-ns" onclick="sel('sim','ns',1.0)"><input type="radio" name="sim">
-            <div class="badge">1.0</div><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">No logra abordar el escenario de forma coherente. Errores críticos en el razonamiento clínico, la exploración o la comunicación que impiden una evaluación favorable.</div>
+            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
+            <div class="opt-desc">No logra abordar el escenario de forma coherente. Errores críticos en el razonamiento clínico, la exploración o la comunicación que impiden una evaluación favorable.</div></div>
           </label>
         </div>
         <div class="nota-row">
@@ -420,20 +497,20 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
     <div class="rubric-card">
       <div class="likert-grid" id="g_resp">
         <label class="likert-cell cell-s"  onclick="sel('resp','s',5.0)"><input type="radio" name="resp">
-          <div class="badge">5.0</div><div class="opt-name">Sobresaliente</div>
-          <div class="opt-desc">Puntualidad permanente, asistencia completa y actitud proactiva. Busca información adicional, plantea preguntas pertinentes y mantiene excelentes relaciones con compañeros, docentes y personal de salud.</div>
+          <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
+          <div class="opt-desc">Puntualidad permanente, asistencia completa y actitud proactiva. Busca información adicional, plantea preguntas pertinentes y mantiene excelentes relaciones con compañeros, docentes y personal de salud.</div></div>
         </label>
         <label class="likert-cell cell-sa" onclick="sel('resp','sa',4.0)"><input type="radio" name="resp">
-          <div class="badge">4.0</div><div class="opt-name">Satisfactorio</div>
-          <div class="opt-desc">Puntualidad y asistencia generales con máximo 1-2 incumplimientos justificados. Actitud positiva, interés sostenido y buenas relaciones interpersonales con el equipo.</div>
+          <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
+          <div class="opt-desc">Puntualidad y asistencia generales con máximo 1-2 incumplimientos justificados. Actitud positiva, interés sostenido y buenas relaciones interpersonales con el equipo.</div></div>
         </label>
         <label class="likert-cell cell-ed" onclick="sel('resp','ed',3.0)"><input type="radio" name="resp">
-          <div class="badge">3.0</div><div class="opt-name">En desarrollo</div>
-          <div class="opt-desc">Impuntualidades o ausencias frecuentes, algunas no justificadas. Actitud pasiva; responde cuando se le solicita sin generar iniciativa propia. Dificultades ocasionales en las relaciones de equipo.</div>
+          <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
+          <div class="opt-desc">Impuntualidades o ausencias frecuentes, algunas no justificadas. Actitud pasiva; responde cuando se le solicita sin generar iniciativa propia. Dificultades ocasionales en las relaciones de equipo.</div></div>
         </label>
         <label class="likert-cell cell-ns" onclick="sel('resp','ns',1.0)"><input type="radio" name="resp">
-          <div class="badge">1.0</div><div class="opt-name">No satisfactorio</div>
-          <div class="opt-desc">Impuntualidad sistemática o ausencias reiteradas. Actitud de desinterés evidente. Conflictos frecuentes que deterioran el ambiente de aprendizaje o la relación con el equipo de salud.</div>
+          <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
+          <div class="opt-desc">Impuntualidad sistemática o ausencias reiteradas. Actitud de desinterés evidente. Conflictos frecuentes que deterioran el ambiente de aprendizaje o la relación con el equipo de salud.</div></div>
         </label>
       </div>
       <div class="nota-row">
