@@ -490,7 +490,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 <div class="send-block no-print">
   <div class="send-title">&#128228; Enviar reporte y registrar en matriz de notas</div>
   <div style="font-size:11px;color:#555;margin-bottom:12px;background:#eef3fa;border:1px solid #cdd8ec;border-radius:6px;padding:8px 12px;line-height:1.6">
-    <strong>Cómo funciona:</strong> Al hacer clic en "Preparar y enviar reporte" se descarga el PDF automáticamente, se abre tu cliente de correo con el mensaje listo (solo debes adjuntar el PDF y enviar), y los datos quedan registrados en tu Google Sheet.
+    <strong>Cómo funciona:</strong> Al hacer clic en "Enviar reporte" se envía el correo al estudiante y al evaluador con todas las calificaciones y la retroalimentación. Los datos quedan registrados en Google Sheets automáticamente.
   </div>
 
   <div class="send-grid">
@@ -773,8 +773,8 @@ function showStatus(type, msg){
   const ok=document.getElementById('status-ok');
   const err=document.getElementById('status-err');
   ok.style.display='none'; err.style.display='none';
-  if(type==='ok'){ok.textContent=msg;ok.style.display='block';setTimeout(()=>{ok.style.display='none';},7000);}
-  else{err.textContent=msg;err.style.display='block';setTimeout(()=>{err.style.display='none';},7000);}
+  if(type==='ok'){ok.textContent=msg;ok.style.display='block';setTimeout(()=>{ok.style.display='none';},8000);}
+  else{err.textContent=msg;err.style.display='block';setTimeout(()=>{err.style.display='none';},8000);}
 }
 
 function getPayload(){
@@ -790,7 +790,6 @@ function getPayload(){
     docente:document.getElementById('f_docente').value||'—',
     email_est:document.getElementById('email_est').value||'',
     email_doc:document.getElementById('email_doc').value||'',
-    sheet_id:document.getElementById('sheet_id').value||'',
     nota_cteor:getVal('cteor')||'',
     nota_hc:getVal('hc')||'',
     nota_hab:getVal('hab')||'',
@@ -806,121 +805,61 @@ function getPayload(){
   };
 }
 
-// ── REGISTRO EN SHEETS (solo datos, sin email — funciona con no-cors) ──
-function callGAS(action, onSuccess){
-  const gasUrl = document.getElementById('gas_url').value.trim();
-  if(!gasUrl){ if(onSuccess) onSuccess(); return; }
-  const payload = getPayload();
-  payload.action = action;
-  const params = new URLSearchParams();
-  Object.keys(payload).forEach(k => params.append(k, payload[k]||''));
-  fetch(gasUrl + '?' + params.toString(), { method:'GET', mode:'no-cors' })
-    .then(function(){ if(onSuccess) onSuccess(); })
-    .catch(function(){ if(onSuccess) onSuccess(); });
-}
-
-// ── GENERAR PDF REAL con jsPDF + html2canvas ──
-function generarPDFBlob(callback){
-  // Construimos el HTML del reporte
-  const htmlStr = buildPDF();
-  // Crear iframe temporal para renderizar
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;height:1123px;border:none;visibility:hidden';
-  document.body.appendChild(iframe);
-  iframe.contentDocument.open();
-  iframe.contentDocument.write(htmlStr);
-  iframe.contentDocument.close();
-  setTimeout(function(){
-    window.html2canvas(iframe.contentDocument.body, {
-      scale: 2, useCORS: true, allowTaint: true,
-      width: 794, windowWidth: 794
-    }).then(function(canvas){
-      document.body.removeChild(iframe);
-      canvas.toBlob(function(blob){ callback(blob, canvas); }, 'application/pdf');
-    }).catch(function(){
-      document.body.removeChild(iframe);
-      callback(null, null);
-    });
-  }, 800);
-}
-
-// ── DESCARGAR PDF REAL ──
-function downloadReport(){
-  const nombre  = document.getElementById('f_nombre').value || 'Estudiante';
-  const periodo = document.getElementById('f_periodo').value || '2026-1';
-  showStatus('ok','⏳ Generando PDF…');
-
-  if(window.jspdf && window.html2canvas){
-    const htmlStr = buildPDF();
-    const iframe  = document.createElement('iframe');
-    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;border:none;visibility:hidden';
-    document.body.appendChild(iframe);
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(htmlStr);
-    iframe.contentDocument.close();
-    setTimeout(function(){
-      window.html2canvas(iframe.contentDocument.body, { scale:2, useCORS:true, width:794, windowWidth:794 })
-      .then(function(canvas){
-        document.body.removeChild(iframe);
-        const { jsPDF } = window.jspdf;
-        const pdf   = new jsPDF('p','mm','a4');
-        const imgW  = 210;
-        const imgH  = (canvas.height * imgW) / canvas.width;
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-        let posY = 0;
-        const pageH = 297;
-        while(posY < imgH){
-          if(posY > 0) pdf.addPage();
-          pdf.addImage(imgData,'JPEG', 0, -posY, imgW, imgH);
-          posY += pageH;
-        }
-        pdf.save('Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.pdf');
-        showStatus('ok','✓ PDF descargado correctamente.');
-      });
-    }, 800);
-  } else {
-    // Fallback: descargar HTML (abrir en Chrome y Ctrl+P)
-    const blob = new Blob([buildPDF()], {type:'text/html;charset=utf-8'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = 'Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.html';
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showStatus('ok','✓ Archivo descargado. Ábrelo en Chrome → Ctrl+P → Guardar como PDF.');
-  }
-}
-
-// ── ENVIAR REPORTE: solo email con retroalimentación, sin PDF ──
+// ── ENVIAR REPORTE POR EMAIL vía GAS (sin PDF, sin descarga) ──
 function sendReport(){
   const email    = document.getElementById('email_est').value.trim();
   const emailDoc = document.getElementById('email_doc').value.trim();
-  if(!email){ showStatus('err','Ingresa el email del estudiante.'); return; }
+  const gasUrl   = document.getElementById('gas_url').value.trim();
 
-  showStatus('ok','⏳ Enviando reporte por email…');
+  if(!email){ showStatus('err','⚠ Ingresa el email institucional del estudiante.'); return; }
+  if(!gasUrl){ showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".'); return; }
+
+  showStatus('ok','⏳ Enviando reporte por correo electrónico…');
 
   const payload  = getPayload();
-  payload.action = 'sendOnly'; // nueva acción: solo email, sin PDF
+  payload.action = 'sendOnly';
   const params   = new URLSearchParams();
-  Object.keys(payload).forEach(k => params.append(k, payload[k] || ''));
+  Object.keys(payload).forEach(k => params.append(k, String(payload[k]||'')));
 
-  fetch(document.getElementById('gas_url').value.trim() + '?' + params.toString(),
-    { method:'GET', mode:'no-cors' })
+  fetch(gasUrl + '?' + params.toString(), { method:'GET', mode:'no-cors' })
     .then(function(){
-      showStatus('ok','✓ Reporte enviado correctamente a ' + email
-        + (emailDoc ? ' (copia a ' + emailDoc + ')' : '')
-        + ' · Registrado en Sheets ✓');
+      showStatus('ok',
+        '✓ Correo enviado a ' + email
+        + (emailDoc ? ' · Copia a ' + emailDoc : '')
+        + ' · Datos registrados en Sheets ✓'
+      );
     })
-    .catch(function(err){
-      showStatus('err','Error de red: ' + err.message);
+    .catch(function(e){
+      showStatus('err','Error de conexión: ' + e.message);
     });
 }
 
+// ── SOLO REGISTRAR EN SHEETS ──
 function soloSheets(){
+  const gasUrl = document.getElementById('gas_url').value.trim();
+  if(!gasUrl){ showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".'); return; }
   showStatus('ok','⏳ Registrando en Sheets…');
-  callGAS('registerOnly', function(){
-    showStatus('ok','✓ Datos registrados en Google Sheets correctamente.');
-  });
+  const payload  = getPayload();
+  payload.action = 'registerOnly';
+  const params   = new URLSearchParams();
+  Object.keys(payload).forEach(k => params.append(k, String(payload[k]||'')));
+  fetch(gasUrl + '?' + params.toString(), { method:'GET', mode:'no-cors' })
+    .then(function(){ showStatus('ok','✓ Datos registrados en Google Sheets correctamente.'); })
+    .catch(function(e){ showStatus('err','Error: ' + e.message); });
+}
+
+// ── DESCARGAR HTML (para imprimir como PDF desde Chrome) ──
+function downloadReport(){
+  const nombre  = document.getElementById('f_nombre').value || 'Estudiante';
+  const periodo = document.getElementById('f_periodo').value || '2026-1';
+  const blob = new Blob([buildPDF()], {type:'text/html;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'Rubrica_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showStatus('ok','✓ Archivo descargado. Ábrelo en Chrome → Ctrl+P → Guardar como PDF.');
 }
 </script>
 </body>
