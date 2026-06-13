@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rúbrica Semiología Médica — Universidad de Manizales</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;background:#f0f2f5}
@@ -149,7 +151,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 /* ══════════════════════════════════════
    RESPONSIVE MÓVIL
 ══════════════════════════════════════ */
-@media (max-width:640px){
+@media (max-width:768px){
 
   /* PAGE */
   .page{margin:0;border-radius:0;box-shadow:none}
@@ -159,10 +161,12 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
   .header{padding:12px 14px;gap:10px}
   .header-text h1{font-size:13px}
   .header-text h2{font-size:10px}
-  .header-text h3{font-size:9px;display:none}
+  .header-text h3{display:none}
 
   /* IDENTIFICACIÓN — todo en 1 columna */
-  .id-grid-2,.id-grid-3,.id-grid-4{grid-template-columns:1fr}
+  .id-grid-2{grid-template-columns:1fr !important}
+  .id-grid-3{grid-template-columns:1fr !important}
+  .id-grid-4{grid-template-columns:1fr 1fr !important}
 
   /* GRUPOS */
   .group-header{padding:10px 12px}
@@ -171,8 +175,8 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
   .subgroup-header{padding:7px 12px}
 
   /* LIKERT — apilado verticalmente en móvil */
-  .likert-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,auto)}
-  .likert-cell{border-left:none;border-top:1px solid #dde2ea;padding:10px 14px;display:flex;align-items:flex-start;gap:10px}
+  .likert-grid{grid-template-columns:1fr !important;grid-template-rows:repeat(4,auto)}
+  .likert-cell{border-left:none !important;border-top:1px solid #dde2ea;padding:10px 14px;display:flex !important;align-items:flex-start;gap:10px}
   .likert-cell:first-child{border-top:none}
   .likert-cell .badge{margin-bottom:0;flex-shrink:0;min-width:34px;text-align:center}
   .likert-cell .opt-name{font-size:12px;margin-bottom:2px}
@@ -186,7 +190,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
   .nota-row .auto-badge{font-size:11px;padding:3px 10px}
 
   /* RETROALIMENTACIÓN */
-  .retro-grid{grid-template-columns:1fr}
+  .retro-grid{grid-template-columns:1fr !important}
   .retro-block{padding:12px}
   .retro-block textarea{min-height:80px;font-size:13px}
 
@@ -198,7 +202,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 
   /* SEND BLOCK */
   .send-block{padding:12px}
-  .send-grid{grid-template-columns:1fr}
+  .send-grid{grid-template-columns:1fr !important}
   .btn-row{flex-direction:column}
   .btn-primary,.btn-secondary{width:100%;padding:12px 18px;font-size:13px;text-align:center}
 
@@ -209,13 +213,15 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
   .firma-uni{font-size:9px}
 
   /* CONFIG PANEL */
-  #config-panel .send-grid{grid-template-columns:1fr}
+  #config-panel .send-grid{grid-template-columns:1fr !important}
 
   /* DIVIDER */
   .divider{margin:14px 0}
 }
 
-@media (max-width:400px){
+@media (max-width:480px){
+  /* En pantallas muy pequeñas, id-grid-4 también a 1 columna */
+  .id-grid-4{grid-template-columns:1fr !important}
   .header-text h1{font-size:12px}
   .group-title{font-size:11px}
   .score-big{font-size:40px}
@@ -939,18 +945,62 @@ function soloSheets(){
     .catch(function(e){ showStatus('err','Error: ' + e.message); });
 }
 
-// ── DESCARGAR HTML (para imprimir como PDF desde Chrome) ──
+// ── DESCARGAR PDF REAL ──
 function downloadReport(){
   const nombre  = document.getElementById('f_nombre').value || 'Estudiante';
   const periodo = document.getElementById('f_periodo').value || '2026-1';
-  const blob = new Blob([buildPDF()], {type:'text/html;charset=utf-8'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url;
-  a.download = 'Rubrica_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.html';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showStatus('ok','✓ Archivo descargado. Ábrelo en Chrome → Ctrl+P → Guardar como PDF.');
+  const fname   = 'Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.pdf';
+
+  showStatus('ok','⏳ Generando PDF… espera unos segundos.');
+
+  // Crear contenedor temporal con el HTML del reporte
+  const container = document.createElement('div');
+  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,sans-serif;font-size:12px;color:#1a1a1a;z-index:-1';
+  container.innerHTML = buildPDF();
+  document.body.appendChild(container);
+
+  setTimeout(function(){
+    window.html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      width: 794,
+      windowWidth: 794,
+      logging: false
+    }).then(function(canvas){
+      document.body.removeChild(container);
+
+      const { jsPDF } = window.jspdf;
+      const pdf    = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+      const pageW  = 210;
+      const pageH  = 297;
+      const imgW   = pageW;
+      const imgH   = (canvas.height * imgW) / canvas.width;
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+      let posY = 0;
+      while(posY < imgH){
+        if(posY > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, -posY, imgW, imgH);
+        posY += pageH;
+      }
+
+      pdf.save(fname);
+      showStatus('ok','✓ PDF descargado correctamente: ' + fname);
+    }).catch(function(err){
+      document.body.removeChild(container);
+      // Fallback: descargar como HTML imprimible
+      const blob = new Blob([buildPDF()], {type:'text/html;charset=utf-8'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = nombre.replace(/\s+/g,'_') + '_' + periodo + '_rubrica.html';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showStatus('ok','✓ Descargado como HTML — ábrelo en Chrome → Ctrl+P → Guardar como PDF.');
+    });
+  }, 300);
 }
 </script>
 </body>
