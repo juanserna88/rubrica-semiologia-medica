@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rúbrica Semiología Médica — Universidad de Manizales</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;background:#f0f2f5}
@@ -19,16 +19,13 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 
 .page{max-width:940px;margin:24px auto;background:white;border-radius:10px;box-shadow:0 2px 16px rgba(0,0,0,.10);overflow:hidden}
 
-/* HEADER */
 .header{background:#1a3a5c;color:white;padding:16px 28px;display:flex;align-items:center;gap:16px}
-.header-logo{background:rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;font-size:15px;font-weight:700;text-align:center;line-height:1.3;min-width:52px}
+.header-logo{background:none;padding:0;min-width:auto}
 .header-text h1{font-size:15px;font-weight:700;margin-bottom:2px}
 .header-text h2{font-size:11px;font-weight:400;opacity:.85;margin-bottom:2px}
 .header-text h3{font-size:10px;font-weight:400;opacity:.65}
 
 .body{padding:22px 28px}
-
-/* IDENTIFICACIÓN */
 .section-title{font-size:10px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
 .id-grid{display:grid;gap:10px;margin-bottom:12px}
 .id-grid-2{grid-template-columns:1fr 1fr}
@@ -39,23 +36,16 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 .field input:focus,.field select:focus{outline:2px solid #185FA5;border-color:#185FA5;background:white}
 .divider{border:none;border-top:1px solid #e5e8ec;margin:18px 0}
 
-/* GRUPO CONTENEDOR */
 .group-block{margin-bottom:14px}
 .group-header{border-radius:7px 7px 0 0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .group-title{font-size:13px;font-weight:700;color:white;letter-spacing:.01em}
 .group-weight{font-size:11px;font-weight:700;background:rgba(255,255,255,.25);color:white;border-radius:10px;padding:3px 10px}
 
-/* Colores por grupo */
 .gh-I   {background:#1a3a5c}
 .gh-IIa {background:#1d6b4e}
-.gh-IIb {background:#1d6b4e}
-.gh-III {background:#7a4800}
-.gh-IV  {background:#5c1a3a}
-.gh-IVa {background:#5c1a3a}
-.gh-IVb {background:#5c1a3a}
+.gh-III {background:#5c1a3a}
 .gh-V   {background:#4a4a4a}
 
-/* SUB-GRUPO (para discriminados) */
 .subgroup-wrap{border:1px solid #dde2ea;border-radius:0 0 7px 7px;overflow:hidden;margin-bottom:14px}
 .subgroup-header{padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dde2ea}
 .subgroup-title{font-size:11px;font-weight:700;color:white}
@@ -65,18 +55,12 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 .sg-IVa {background:#7a2060}
 .sg-IVb {background:#5c1a3a}
 
-/* Cuando hay subgrupos dentro de un wrapper */
 .subgroup-inner{border-top:1px solid #dde2ea}
 .subgroup-inner:first-child{border-top:none}
 
-/* RUBRIC CARD (Likert) */
 .rubric-card{border:0;border-bottom:1px solid #dde2ea;overflow:hidden}
 .rubric-card:last-child{border-bottom:none}
-.rubric-card-header{background:#f7f8fa;padding:7px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dde2ea}
-.rubric-card-title{font-size:11px;font-weight:700;color:#1a3a5c}
-.rubric-card-weight{font-size:10px;color:#777;background:#e8ecf1;border-radius:8px;padding:2px 8px}
 
-/* LIKERT */
 .likert-grid{display:grid;grid-template-columns:repeat(4,1fr)}
 .likert-cell{border-left:1px solid #dde2ea;padding:9px 10px 11px;cursor:pointer;transition:background .15s;position:relative}
 .likert-cell:first-child{border-left:none}
@@ -98,7 +82,6 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 .cell-ed.selected {background:#fef4e5}
 .cell-ns.selected {background:#fde9e9}
 
-/* NOTA CASILLA */
 .nota-row{display:flex;align-items:center;gap:8px;padding:7px 16px;border-top:1px solid #dde2ea;background:#fafbfc}
 .nota-row label{font-size:11px;font-weight:700;color:#444;white-space:nowrap}
 .nota-row input[type="number"]{width:78px;border:1.5px solid #cdd3db;border-radius:5px;padding:5px 8px;font-size:14px;font-weight:700;color:#1a3a5c;text-align:center;font-family:Arial,sans-serif}
@@ -106,14 +89,12 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 .nota-row .nota-hint{font-size:10px;color:#aaa}
 .nota-row .auto-badge{font-size:10px;background:#e8ecf1;color:#444;border-radius:10px;padding:2px 9px;font-weight:700}
 
-/* RETROALIMENTACIÓN */
 .retro-block{border:1px solid #dde2ea;border-radius:8px;padding:14px 16px;margin-bottom:10px}
 .retro-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 .retro-block textarea{width:100%;border:1px solid #cdd3db;border-radius:5px;padding:7px 10px;font-size:12px;font-family:Arial,sans-serif;color:#1a1a1a;resize:vertical;min-height:70px;line-height:1.5;background:#fafafa}
 .retro-block textarea:focus{outline:2px solid #185FA5;background:white}
 .retro-block label{display:block;font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
 
-/* SCORE PANEL */
 .score-panel{background:#1a3a5c;color:white;border-radius:8px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:18px 0 12px}
 .score-main{display:flex;align-items:baseline;gap:8px}
 .score-big{font-size:42px;font-weight:700;line-height:1}
@@ -125,134 +106,85 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 .bar-track{flex:1;height:6px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden}
 .bar-fill{height:100%;border-radius:3px;transition:width .3s}
 
-/* SEND BLOCK */
 .send-block{background:#f4f6f9;border:1px solid #dde2ea;border-radius:8px;padding:14px 18px;margin-top:4px}
 .send-title{font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:8px}
 .send-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
 .send-field label{font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:3px}
 .send-field input{width:100%;border:1px solid #cdd3db;border-radius:5px;padding:7px 10px;font-size:12px;font-family:Arial,sans-serif;background:white}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .btn-primary{background:#1a3a5c;color:white;border:none;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif}
 .btn-primary:hover{background:#245080}
 .btn-secondary{background:white;color:#1a3a5c;border:1.5px solid #1a3a5c;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif}
 .btn-secondary:hover{background:#eef2f7}
+.btn-danger{background:#7B241C;color:white;border:none;border-radius:6px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif}
+.btn-danger:hover{background:#922B21}
 .status-ok{background:#d4edda;color:#2a6a3a;border-radius:6px;padding:8px 12px;font-size:11px;margin-top:8px;display:none}
 .status-err{background:#fddede;color:#8b1e1e;border-radius:6px;padding:8px 12px;font-size:11px;margin-top:8px;display:none}
-.btn-toggle-config{background:none;border:1px solid #cdd3db;border-radius:5px;padding:5px 12px;font-size:11px;color:#555;cursor:pointer;font-family:Arial,sans-serif}
+.btn-toggle-config{background:none;border:1px solid #cdd3db;border-radius:5px;padding:5px 12px;font-size:11px;color:#555;cursor:pointer;font-family:Arial,sans-serif;margin-bottom:10px}
 .btn-toggle-config:hover{background:#f0f2f5}
-/* FIRMA */
+
 .firma-block{display:flex;align-items:center;gap:16px;background:#1a3a5c;padding:16px 28px}
-.firma-avatar{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.2);color:white;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:.05em}
-.firma-info{flex:1}
-.firma-nombre{font-size:14px;font-weight:700;color:white;margin-bottom:2px}
-.firma-cargo{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:1px}
-.firma-uni{font-size:10px;color:rgba(255,255,255,.5);margin-top:4px}
+.firma-info .firma-nombre{font-size:14px;font-weight:700;color:white;margin-bottom:2px}
+.firma-info .firma-cargo{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:1px}
+.firma-info .firma-uni{font-size:10px;color:rgba(255,255,255,.5);margin-top:4px}
 
-/* ══════════════════════════════════════
-   RESPONSIVE MÓVIL
-══════════════════════════════════════ */
+/* PDF overlay */
+#pdf-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,58,92,.85);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#pdf-overlay.active{display:flex}
+.pdf-spinner{width:48px;height:48px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pdf-msg{color:#fff;font-size:14px;font-weight:600}
+
 @media (max-width:768px){
-
-  /* PAGE */
   .page{margin:0;border-radius:0;box-shadow:none}
-  .body{padding:14px 14px}
-
-  /* HEADER */
-  .header{padding:12px 14px;gap:10px}
-  .header-text h1{font-size:13px}
-  .header-text h2{font-size:10px}
-  .header-text h3{display:none}
-
-  /* IDENTIFICACIÓN — todo en 1 columna */
-  .id-grid-2{grid-template-columns:1fr !important}
-  .id-grid-3{grid-template-columns:1fr !important}
-  .id-grid-4{grid-template-columns:1fr 1fr !important}
-
-  /* GRUPOS */
-  .group-header{padding:10px 12px}
-  .group-title{font-size:12px}
-  .group-weight{font-size:10px;padding:2px 8px}
-  .subgroup-header{padding:7px 12px}
-
-  /* LIKERT — apilado verticalmente en móvil */
-  .likert-grid{grid-template-columns:1fr !important;grid-template-rows:repeat(4,auto)}
-  .likert-cell{border-left:none !important;border-top:1px solid #dde2ea;padding:10px 14px;display:flex !important;align-items:flex-start;gap:10px}
+  .body{padding:14px}
+  .id-grid-2,.id-grid-3{grid-template-columns:1fr!important}
+  .id-grid-4{grid-template-columns:1fr 1fr!important}
+  .likert-grid{grid-template-columns:1fr!important}
+  .likert-cell{border-left:none!important;border-top:1px solid #dde2ea;display:flex!important;align-items:flex-start;gap:10px}
   .likert-cell:first-child{border-top:none}
-  .likert-cell .badge{margin-bottom:0;flex-shrink:0;min-width:34px;text-align:center}
-  .likert-cell .opt-name{font-size:12px;margin-bottom:2px}
-  .likert-cell .opt-desc{font-size:11px}
+  .likert-cell .badge{flex-shrink:0;min-width:34px;text-align:center;margin-bottom:0}
   .likert-cell-content{flex:1}
-
-  /* NOTA ROW */
-  .nota-row{padding:8px 14px;flex-wrap:wrap;gap:6px}
-  .nota-row input[type="number"]{width:90px;font-size:16px}
-  .nota-row .nota-hint{font-size:11px}
-  .nota-row .auto-badge{font-size:11px;padding:3px 10px}
-
-  /* RETROALIMENTACIÓN */
-  .retro-grid{grid-template-columns:1fr !important}
-  .retro-block{padding:12px}
-  .retro-block textarea{min-height:80px;font-size:13px}
-
-  /* SCORE PANEL */
-  .score-panel{flex-direction:column;align-items:flex-start;gap:12px;padding:14px 16px}
+  .retro-grid{grid-template-columns:1fr!important}
+  .score-panel{flex-direction:column;align-items:flex-start}
   .score-big{font-size:48px}
   .score-bars{width:100%;min-width:unset}
-  .bar-label{width:140px;font-size:10px}
-
-  /* SEND BLOCK */
-  .send-block{padding:12px}
-  .send-grid{grid-template-columns:1fr !important}
+  .bar-label{width:130px}
+  .send-grid{grid-template-columns:1fr!important}
   .btn-row{flex-direction:column}
-  .btn-primary,.btn-secondary{width:100%;padding:12px 18px;font-size:13px;text-align:center}
-
-  /* FIRMA */
-  .firma-block{padding:14px 14px;gap:12px}
-  .firma-nombre{font-size:13px}
-  .firma-cargo{font-size:10px}
-  .firma-uni{font-size:9px}
-
-  /* CONFIG PANEL */
-  #config-panel .send-grid{grid-template-columns:1fr !important}
-
-  /* DIVIDER */
-  .divider{margin:14px 0}
+  .btn-primary,.btn-secondary,.btn-danger{width:100%;padding:12px 18px;font-size:13px;text-align:center}
 }
-
 @media (max-width:480px){
-  /* En pantallas muy pequeñas, id-grid-4 también a 1 columna */
-  .id-grid-4{grid-template-columns:1fr !important}
-  .header-text h1{font-size:12px}
-  .group-title{font-size:11px}
+  .id-grid-4{grid-template-columns:1fr!important}
   .score-big{font-size:40px}
-  .bar-label{width:110px}
-  .likert-cell .opt-desc{font-size:10px}
 }
 </style>
 </head>
 <body>
+
+<!-- OVERLAY PDF -->
+<div id="pdf-overlay">
+  <div class="pdf-spinner"></div>
+  <div class="pdf-msg" id="pdf-msg">Generando PDF…</div>
+</div>
+
 <div class="page">
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-logo" style="background:none;padding:0;min-width:auto">
+  <div class="header-logo">
     <svg width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:8px;overflow:hidden">
-      <!-- fondo azul oscuro -->
       <rect width="54" height="54" fill="#1a2a4a"/>
-      <!-- círculo azul medio — esquina superior derecha -->
       <circle cx="46" cy="10" r="28" fill="#3a6fa8" opacity="0.85"/>
-      <!-- texto FACULTAD -->
       <text x="7" y="28" font-family="Arial,sans-serif" font-size="8.2" font-weight="700" fill="white" letter-spacing="0.3">FACULTAD</text>
-      <!-- texto DE CIENCIAS -->
       <text x="7" y="37" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE CIENCIAS</text>
-      <!-- texto DE LA SALUD -->
       <text x="7" y="45" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE LA SALUD</text>
     </svg>
   </div>
   <div class="header-text">
     <h1>Rúbrica de Evaluación — Semiología Médica</h1>
     <h2>Facultad de Ciencias de la Salud &middot; Universidad de Manizales</h2>
-    <h3>Desarrollada por Dr. Juan David Serna Zuluaga &middot; Médico &middot; Coordinador Cátedra de Semiología &middot; Magíster en Educación y Transformación Digital</h3>
+    <h3>Dr. Juan David Serna Zuluaga &middot; Médico &middot; Coordinador Cátedra de Semiología &middot; Mg. Educación y Transformación Digital</h3>
   </div>
 </div>
 
@@ -284,216 +216,94 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 
 <hr class="divider">
 
-<!-- ═══════════════════════════════════════════
-     I. CONOCIMIENTOS TEÓRICOS  30%
-════════════════════════════════════════════ -->
+<!-- I. CONOCIMIENTOS TEÓRICOS 30% -->
 <div class="group-block">
   <div class="group-header gh-I">
     <span class="group-title">I. Conocimientos teóricos</span>
     <span class="group-weight">30%</span>
   </div>
   <div class="subgroup-wrap">
-
-    <!-- Ítem único del bloque -->
     <div class="rubric-card">
       <div class="likert-grid" id="g_cteor">
-        <label class="likert-cell cell-s"  onclick="sel('cteor','s',5.0)"><input type="radio" name="cteor">
-          <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
-          <div class="opt-desc">Domina los fundamentos teóricos y fisiopatológicos. Relaciona con precisión mecanismos de enfermedad, signos y síntomas. Aplica correctamente los conceptos semiológicos (síntoma, signo, síndrome, enfermedad) sin errores conceptuales.</div></div>
-        </label>
-        <label class="likert-cell cell-sa" onclick="sel('cteor','sa',4.0)"><input type="radio" name="cteor">
-          <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
-          <div class="opt-desc">Maneja los fundamentos esenciales con errores menores que no afectan el razonamiento clínico global. Conoce los conceptos semiológicos básicos con imprecisiones terminológicas menores.</div></div>
-        </label>
-        <label class="likert-cell cell-ed" onclick="sel('cteor','ed',3.0)"><input type="radio" name="cteor">
-          <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
-          <div class="opt-desc">Conocimiento básico con vacíos en la correlación fisiopatológica. Confunde algunos conceptos semiológicos fundamentales. Requiere orientación para establecer relaciones mecanismo-síntoma.</div></div>
-        </label>
-        <label class="likert-cell cell-ns" onclick="sel('cteor','ns',1.0)"><input type="radio" name="cteor">
-          <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
-          <div class="opt-desc">Errores conceptuales fundamentales que comprometen el razonamiento clínico. Desconoce o aplica de forma errónea los conceptos semiológicos básicos.</div></div>
-        </label>
+        <label class="likert-cell cell-s"  onclick="sel('cteor','s',5.0)"><input type="radio" name="cteor"><div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div><div class="opt-desc">Domina los fundamentos teóricos y fisiopatológicos. Relaciona con precisión mecanismos de enfermedad, signos y síntomas. Aplica correctamente los conceptos semiológicos sin errores conceptuales.</div></div></label>
+        <label class="likert-cell cell-sa" onclick="sel('cteor','sa',4.0)"><input type="radio" name="cteor"><div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div><div class="opt-desc">Maneja los fundamentos esenciales con errores menores que no afectan el razonamiento clínico global. Conoce los conceptos semiológicos básicos con imprecisiones terminológicas menores.</div></div></label>
+        <label class="likert-cell cell-ed" onclick="sel('cteor','ed',3.0)"><input type="radio" name="cteor"><div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div><div class="opt-desc">Conocimiento básico con vacíos en la correlación fisiopatológica. Confunde algunos conceptos semiológicos fundamentales. Requiere orientación para establecer relaciones mecanismo-síntoma.</div></div></label>
+        <label class="likert-cell cell-ns" onclick="sel('cteor','ns',1.0)"><input type="radio" name="cteor"><div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div><div class="opt-desc">Errores conceptuales fundamentales que comprometen el razonamiento clínico. Desconoce o aplica de forma errónea los conceptos semiológicos básicos.</div></div></label>
       </div>
-      <div class="nota-row">
-        <label>Nota:</label>
-        <input type="number" id="n_cteor" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('cteor')">
-        <span class="nota-hint">0.0 – 5.0</span>
-        <span class="auto-badge" id="ab_cteor">Sin calificar</span>
-      </div>
+      <div class="nota-row"><label>Nota:</label><input type="number" id="n_cteor" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('cteor')"><span class="nota-hint">0.0 – 5.0</span><span class="auto-badge" id="ab_cteor">Sin calificar</span></div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     II. HISTORIA CLÍNICA Y HABILIDADES CLÍNICAS  35%
-     ↳ IIa. Historia Clínica  17.5%
-     ↳ IIb. Habilidades clínicas en la cabecera  17.5%
-════════════════════════════════════════════ -->
+<!-- II. HISTORIA CLÍNICA Y HABILIDADES CLÍNICAS 35% -->
 <div class="group-block">
   <div class="group-header gh-IIa" style="border-radius:7px 7px 0 0">
     <span class="group-title">II. Historia clínica y habilidades clínicas en la cabecera del paciente</span>
     <span class="group-weight">35%</span>
   </div>
   <div class="subgroup-wrap" style="border-radius:0 0 7px 7px">
-
-    <!-- IIa: Historia Clínica -->
     <div class="subgroup-inner">
-      <div class="subgroup-header sg-IIa">
-        <span class="subgroup-title">IIa. Historia clínica</span>
-        <span class="subgroup-weight">17,5%</span>
-      </div>
+      <div class="subgroup-header sg-IIa"><span class="subgroup-title">IIa. Historia clínica</span><span class="subgroup-weight">17,5%</span></div>
       <div class="rubric-card">
         <div class="likert-grid" id="g_hc">
-          <label class="likert-cell cell-s"  onclick="sel('hc','s',5.0)"><input type="radio" name="hc">
-            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Elabora la historia clínica con estructura completa: motivo de consulta, HEA, antecedentes y revisión por sistemas. Usa lenguaje técnico preciso, sin omisiones relevantes.</div></div>
-          </label>
-          <label class="likert-cell cell-sa" onclick="sel('hc','sa',4.0)"><input type="radio" name="hc">
-            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Construye la historia clínica con estructura adecuada; omisiones menores en algunos componentes sin impacto significativo en la comprensión del caso clínico.</div></div>
-          </label>
-          <label class="likert-cell cell-ed" onclick="sel('hc','ed',3.0)"><input type="radio" name="hc">
-            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Historia clínica incompleta o con errores de secuencia; requiere orientación docente para incluir todos los componentes esenciales del interrogatorio clínico.</div></div>
-          </label>
-          <label class="likert-cell cell-ns" onclick="sel('hc','ns',1.0)"><input type="radio" name="hc">
-            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">No logra elaborar una historia clínica organizada. Ausencia de estructura básica o información clínica crítica que impide la comprensión del caso.</div></div>
-          </label>
+          <label class="likert-cell cell-s"  onclick="sel('hc','s',5.0)"><input type="radio" name="hc"><div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div><div class="opt-desc">Elabora la historia clínica con estructura completa: motivo de consulta, HEA, antecedentes y revisión por sistemas. Usa lenguaje técnico preciso, sin omisiones relevantes.</div></div></label>
+          <label class="likert-cell cell-sa" onclick="sel('hc','sa',4.0)"><input type="radio" name="hc"><div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div><div class="opt-desc">Construye la historia clínica con estructura adecuada; omisiones menores en algunos componentes sin impacto significativo en la comprensión del caso clínico.</div></div></label>
+          <label class="likert-cell cell-ed" onclick="sel('hc','ed',3.0)"><input type="radio" name="hc"><div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div><div class="opt-desc">Historia clínica incompleta o con errores de secuencia; requiere orientación docente para incluir todos los componentes esenciales del interrogatorio clínico.</div></div></label>
+          <label class="likert-cell cell-ns" onclick="sel('hc','ns',1.0)"><input type="radio" name="hc"><div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div><div class="opt-desc">No logra elaborar una historia clínica organizada. Ausencia de estructura básica o información clínica crítica que impide la comprensión del caso.</div></div></label>
         </div>
-        <div class="nota-row">
-          <label>Nota:</label>
-          <input type="number" id="n_hc" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('hc')">
-          <span class="nota-hint">0.0 – 5.0</span>
-          <span class="auto-badge" id="ab_hc">Sin calificar</span>
-        </div>
+        <div class="nota-row"><label>Nota:</label><input type="number" id="n_hc" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('hc')"><span class="nota-hint">0.0 – 5.0</span><span class="auto-badge" id="ab_hc">Sin calificar</span></div>
       </div>
     </div>
-
-    <!-- IIb: Habilidades clínicas en cabecera -->
     <div class="subgroup-inner">
-      <div class="subgroup-header sg-IIb">
-        <span class="subgroup-title">IIb. Habilidades clínicas en la cabecera del paciente</span>
-        <span class="subgroup-weight">17,5%</span>
-      </div>
+      <div class="subgroup-header sg-IIb"><span class="subgroup-title">IIb. Habilidades clínicas en la cabecera del paciente</span><span class="subgroup-weight">17,5%</span></div>
       <div class="rubric-card">
         <div class="likert-grid" id="g_hab">
-          <label class="likert-cell cell-s"  onclick="sel('hab','s',5.0)"><input type="radio" name="hab">
-            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Realiza exploración física sistemática e interpreta hallazgos con precisión semiológica. Integra datos para formular hipótesis diagnósticas coherentes en tiempo real. Presenta el caso con claridad, síntesis y lenguaje médico apropiado.</div></div>
-          </label>
-          <label class="likert-cell cell-sa" onclick="sel('hab','sa',4.0)"><input type="radio" name="hab">
-            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Exploración física adecuada con errores menores en interpretación. Formula hipótesis con guía docente puntual. Presenta el caso de forma ordenada con algunos problemas de síntesis.</div></div>
-          </label>
-          <label class="likert-cell cell-ed" onclick="sel('hab','ed',3.0)"><input type="radio" name="hab">
-            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Exploración física incompleta o técnica deficiente. Dificultad para integrar datos y formular hipótesis. Presentación desorganizada; requiere orientación docente permanente.</div></div>
-          </label>
-          <label class="likert-cell cell-ns" onclick="sel('hab','ns',1.0)"><input type="radio" name="hab">
-            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">No realiza exploración física sistemática ni interpreta signos clínicos. No articula razonamiento clínico coherente. No logra presentar el caso de forma comprensible.</div></div>
-          </label>
+          <label class="likert-cell cell-s"  onclick="sel('hab','s',5.0)"><input type="radio" name="hab"><div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div><div class="opt-desc">Realiza exploración física sistemática e interpreta hallazgos con precisión semiológica. Integra datos para formular hipótesis diagnósticas coherentes en tiempo real.</div></div></label>
+          <label class="likert-cell cell-sa" onclick="sel('hab','sa',4.0)"><input type="radio" name="hab"><div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div><div class="opt-desc">Exploración física adecuada con errores menores en interpretación. Formula hipótesis con guía docente puntual. Presenta el caso de forma ordenada con algunos problemas de síntesis.</div></div></label>
+          <label class="likert-cell cell-ed" onclick="sel('hab','ed',3.0)"><input type="radio" name="hab"><div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div><div class="opt-desc">Exploración física incompleta o técnica deficiente. Dificultad para integrar datos y formular hipótesis. Presentación desorganizada; requiere orientación docente permanente.</div></div></label>
+          <label class="likert-cell cell-ns" onclick="sel('hab','ns',1.0)"><input type="radio" name="hab"><div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div><div class="opt-desc">No realiza exploración física sistemática ni interpreta signos clínicos. No articula razonamiento clínico coherente.</div></div></label>
         </div>
-        <div class="nota-row">
-          <label>Nota:</label>
-          <input type="number" id="n_hab" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('hab')">
-          <span class="nota-hint">0.0 – 5.0</span>
-          <span class="auto-badge" id="ab_hab">Sin calificar</span>
-        </div>
+        <div class="nota-row"><label>Nota:</label><input type="number" id="n_hab" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('hab')"><span class="nota-hint">0.0 – 5.0</span><span class="auto-badge" id="ab_hab">Sin calificar</span></div>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     III. QUIZ FINAL  30%
-     ↳ IIIa. Quiz escrito  15%
-     ↳ IIIb. Evaluación práctica — Simulación Clínica  15%
-════════════════════════════════════════════ -->
+<!-- III. QUIZ FINAL 30% -->
 <div class="group-block">
-  <div class="group-header gh-IV" style="border-radius:7px 7px 0 0">
+  <div class="group-header gh-III" style="border-radius:7px 7px 0 0">
     <span class="group-title">III. Quiz final</span>
     <span class="group-weight">30%</span>
   </div>
   <div class="subgroup-wrap" style="border-radius:0 0 7px 7px">
-
-    <!-- IIIa: Quiz escrito -->
     <div class="subgroup-inner">
-      <div class="subgroup-header sg-IVa">
-        <span class="subgroup-title">IIIa. Quiz escrito</span>
-        <span class="subgroup-weight">15%</span>
-      </div>
+      <div class="subgroup-header sg-IVa"><span class="subgroup-title">IIIa. Quiz escrito</span><span class="subgroup-weight">15%</span></div>
       <div class="rubric-card">
         <div class="likert-grid" id="g_quiz">
-          <label class="likert-cell cell-s"  onclick="sel('quiz','s',5.0)"><input type="radio" name="quiz">
-            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Calificación ≥ 4.5. Demuestra dominio conceptual sólido, integración teórico-clínica y capacidad analítica en la resolución de preguntas.</div></div>
-          </label>
-          <label class="likert-cell cell-sa" onclick="sel('quiz','sa',4.0)"><input type="radio" name="quiz">
-            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Calificación entre 3.5 y 4.4. Manejo adecuado de los contenidos con errores menores que no comprometen la comprensión global.</div></div>
-          </label>
-          <label class="likert-cell cell-ed" onclick="sel('quiz','ed',3.0)"><input type="radio" name="quiz">
-            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Calificación entre 3.0 y 3.4. Conocimiento parcial con vacíos en áreas específicas; requiere refuerzo conceptual dirigido.</div></div>
-          </label>
-          <label class="likert-cell cell-ns" onclick="sel('quiz','ns',1.0)"><input type="radio" name="quiz">
-            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">Calificación &lt; 3.0. Vacíos conceptuales significativos que requieren intervención tutorial y refuerzo de los contenidos fundamentales.</div></div>
-          </label>
+          <label class="likert-cell cell-s"  onclick="sel('quiz','s',5.0)"><input type="radio" name="quiz"><div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div><div class="opt-desc">Calificación ≥ 4.5. Demuestra dominio conceptual sólido, integración teórico-clínica y capacidad analítica en la resolución de preguntas.</div></div></label>
+          <label class="likert-cell cell-sa" onclick="sel('quiz','sa',4.0)"><input type="radio" name="quiz"><div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div><div class="opt-desc">Calificación entre 3.5 y 4.4. Manejo adecuado de los contenidos con errores menores que no comprometen la comprensión global.</div></div></label>
+          <label class="likert-cell cell-ed" onclick="sel('quiz','ed',3.0)"><input type="radio" name="quiz"><div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div><div class="opt-desc">Calificación entre 3.0 y 3.4. Conocimiento parcial con vacíos en áreas específicas; requiere refuerzo conceptual dirigido.</div></div></label>
+          <label class="likert-cell cell-ns" onclick="sel('quiz','ns',1.0)"><input type="radio" name="quiz"><div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div><div class="opt-desc">Calificación &lt; 3.0. Vacíos conceptuales significativos que requieren intervención tutorial.</div></div></label>
         </div>
-        <div class="nota-row">
-          <label>Nota:</label>
-          <input type="number" id="n_quiz" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('quiz')">
-          <span class="nota-hint">0.0 – 5.0</span>
-          <span class="auto-badge" id="ab_quiz">Sin calificar</span>
-        </div>
+        <div class="nota-row"><label>Nota:</label><input type="number" id="n_quiz" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('quiz')"><span class="nota-hint">0.0 – 5.0</span><span class="auto-badge" id="ab_quiz">Sin calificar</span></div>
       </div>
     </div>
-
-    <!-- IIIb: Evaluación práctica — Simulación Clínica -->
     <div class="subgroup-inner">
-      <div class="subgroup-header sg-IVb">
-        <span class="subgroup-title">IIIb. Evaluación práctica basada en Simulación Clínica</span>
-        <span class="subgroup-weight">15%</span>
-      </div>
+      <div class="subgroup-header sg-IVb"><span class="subgroup-title">IIIb. Evaluación práctica — Simulación Clínica</span><span class="subgroup-weight">15%</span></div>
       <div class="rubric-card">
         <div class="likert-grid" id="g_sim">
-          <label class="likert-cell cell-s"  onclick="sel('sim','s',5.0)"><input type="radio" name="sim">
-            <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
-            <div class="opt-desc">Desempeño óptimo en el escenario simulado: aborda correctamente el caso, aplica el razonamiento clínico, usa lenguaje médico preciso y toma decisiones diagnósticas acertadas sin apoyos externos.</div></div>
-          </label>
-          <label class="likert-cell cell-sa" onclick="sel('sim','sa',4.0)"><input type="radio" name="sim">
-            <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
-            <div class="opt-desc">Aborda el escenario con desempeño adecuado; errores menores en la secuencia o en la toma de decisiones que no comprometen el resultado global de la evaluación.</div></div>
-          </label>
-          <label class="likert-cell cell-ed" onclick="sel('sim','ed',3.0)"><input type="radio" name="sim">
-            <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
-            <div class="opt-desc">Dificultades en la ejecución del escenario: errores relevantes en el abordaje clínico, el razonamiento o la comunicación. Requiere retroalimentación inmediata del evaluador.</div></div>
-          </label>
-          <label class="likert-cell cell-ns" onclick="sel('sim','ns',1.0)"><input type="radio" name="sim">
-            <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
-            <div class="opt-desc">No logra abordar el escenario de forma coherente. Errores críticos en el razonamiento clínico, la exploración o la comunicación que impiden una evaluación favorable.</div></div>
-          </label>
+          <label class="likert-cell cell-s"  onclick="sel('sim','s',5.0)"><input type="radio" name="sim"><div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div><div class="opt-desc">Desempeño óptimo en el escenario simulado: aborda correctamente el caso, aplica el razonamiento clínico, usa lenguaje médico preciso y toma decisiones diagnósticas acertadas sin apoyos externos.</div></div></label>
+          <label class="likert-cell cell-sa" onclick="sel('sim','sa',4.0)"><input type="radio" name="sim"><div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div><div class="opt-desc">Aborda el escenario con desempeño adecuado; errores menores en la secuencia o en la toma de decisiones que no comprometen el resultado global.</div></div></label>
+          <label class="likert-cell cell-ed" onclick="sel('sim','ed',3.0)"><input type="radio" name="sim"><div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div><div class="opt-desc">Dificultades en la ejecución del escenario: errores relevantes en el abordaje clínico, el razonamiento o la comunicación. Requiere retroalimentación inmediata.</div></div></label>
+          <label class="likert-cell cell-ns" onclick="sel('sim','ns',1.0)"><input type="radio" name="sim"><div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div><div class="opt-desc">No logra abordar el escenario de forma coherente. Errores críticos en el razonamiento, la exploración o la comunicación que impiden una evaluación favorable.</div></div></label>
         </div>
-        <div class="nota-row">
-          <label>Nota:</label>
-          <input type="number" id="n_sim" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('sim')">
-          <span class="nota-hint">0.0 – 5.0</span>
-          <span class="auto-badge" id="ab_sim">Sin calificar</span>
-        </div>
+        <div class="nota-row"><label>Nota:</label><input type="number" id="n_sim" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('sim')"><span class="nota-hint">0.0 – 5.0</span><span class="auto-badge" id="ab_sim">Sin calificar</span></div>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     IV. RESPONSABILIDAD MÉDICA  5%
-════════════════════════════════════════════ -->
+<!-- IV. RESPONSABILIDAD MÉDICA 5% -->
 <div class="group-block">
   <div class="group-header gh-V">
     <span class="group-title">IV. Responsabilidad médica, actitud, iniciativa e interés</span>
@@ -502,29 +312,12 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
   <div class="subgroup-wrap">
     <div class="rubric-card">
       <div class="likert-grid" id="g_resp">
-        <label class="likert-cell cell-s"  onclick="sel('resp','s',5.0)"><input type="radio" name="resp">
-          <div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div>
-          <div class="opt-desc">Puntualidad permanente, asistencia completa y actitud proactiva. Busca información adicional, plantea preguntas pertinentes y mantiene excelentes relaciones con compañeros, docentes y personal de salud.</div></div>
-        </label>
-        <label class="likert-cell cell-sa" onclick="sel('resp','sa',4.0)"><input type="radio" name="resp">
-          <div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div>
-          <div class="opt-desc">Puntualidad y asistencia generales con máximo 1-2 incumplimientos justificados. Actitud positiva, interés sostenido y buenas relaciones interpersonales con el equipo.</div></div>
-        </label>
-        <label class="likert-cell cell-ed" onclick="sel('resp','ed',3.0)"><input type="radio" name="resp">
-          <div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div>
-          <div class="opt-desc">Impuntualidades o ausencias frecuentes, algunas no justificadas. Actitud pasiva; responde cuando se le solicita sin generar iniciativa propia. Dificultades ocasionales en las relaciones de equipo.</div></div>
-        </label>
-        <label class="likert-cell cell-ns" onclick="sel('resp','ns',1.0)"><input type="radio" name="resp">
-          <div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div>
-          <div class="opt-desc">Impuntualidad sistemática o ausencias reiteradas. Actitud de desinterés evidente. Conflictos frecuentes que deterioran el ambiente de aprendizaje o la relación con el equipo de salud.</div></div>
-        </label>
+        <label class="likert-cell cell-s"  onclick="sel('resp','s',5.0)"><input type="radio" name="resp"><div class="badge">5.0</div><div class="likert-cell-content"><div class="opt-name">Sobresaliente</div><div class="opt-desc">Puntualidad permanente, asistencia completa y actitud proactiva. Busca información adicional, plantea preguntas pertinentes y mantiene excelentes relaciones con compañeros, docentes y personal de salud.</div></div></label>
+        <label class="likert-cell cell-sa" onclick="sel('resp','sa',4.0)"><input type="radio" name="resp"><div class="badge">4.0</div><div class="likert-cell-content"><div class="opt-name">Satisfactorio</div><div class="opt-desc">Puntualidad y asistencia generales con máximo 1-2 incumplimientos justificados. Actitud positiva e interés sostenido.</div></div></label>
+        <label class="likert-cell cell-ed" onclick="sel('resp','ed',3.0)"><input type="radio" name="resp"><div class="badge">3.0</div><div class="likert-cell-content"><div class="opt-name">En desarrollo</div><div class="opt-desc">Impuntualidades o ausencias frecuentes, algunas no justificadas. Actitud pasiva; responde cuando se le solicita sin generar iniciativa propia.</div></div></label>
+        <label class="likert-cell cell-ns" onclick="sel('resp','ns',1.0)"><input type="radio" name="resp"><div class="badge">1.0</div><div class="likert-cell-content"><div class="opt-name">No satisfactorio</div><div class="opt-desc">Impuntualidad sistemática o ausencias reiteradas. Actitud de desinterés evidente. Conflictos frecuentes que deterioran el ambiente de aprendizaje.</div></div></label>
       </div>
-      <div class="nota-row">
-        <label>Nota:</label>
-        <input type="number" id="n_resp" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('resp')">
-        <span class="nota-hint">0.0 – 5.0</span>
-        <span class="auto-badge" id="ab_resp">Sin calificar</span>
-      </div>
+      <div class="nota-row"><label>Nota:</label><input type="number" id="n_resp" min="0" max="5" step="0.1" placeholder="0.0" oninput="manualNota('resp')"><span class="nota-hint">0.0 – 5.0</span><span class="auto-badge" id="ab_resp">Sin calificar</span></div>
     </div>
   </div>
 </div>
@@ -535,35 +328,23 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 <div class="section-title">Retroalimentación docente</div>
 <div class="retro-block">
   <div class="retro-grid">
-    <div>
-      <label>Aspectos de dominio y desempeño destacado</label>
-      <textarea id="retro_fortalezas" placeholder="Describa los aspectos en los que el estudiante demostró dominio o desempeño destacado..."></textarea>
-    </div>
-    <div>
-      <label>Brechas observadas y estrategias de mejora</label>
-      <textarea id="retro_brechas" placeholder="Describa las brechas observadas y las estrategias concretas de mejora discutidas con el estudiante..."></textarea>
-    </div>
+    <div><label>Aspectos de dominio y desempeño destacado</label><textarea id="retro_fortalezas" placeholder="Describa los aspectos en los que el estudiante demostró dominio o desempeño destacado..."></textarea></div>
+    <div><label>Brechas observadas y estrategias de mejora</label><textarea id="retro_brechas" placeholder="Describa las brechas observadas y las estrategias concretas de mejora discutidas con el estudiante..."></textarea></div>
   </div>
-  <div>
-    <label>Compromisos del estudiante — acciones concretas y fechas de verificación</label>
-    <textarea id="retro_compromisos" placeholder="Ej: El estudiante se compromete a practicar la presentación oral de casos clínicos estructurados antes del X de [mes]..."></textarea>
-  </div>
+  <div><label>Compromisos del estudiante — acciones concretas y fechas de verificación</label><textarea id="retro_compromisos" placeholder="Ej: El estudiante se compromete a practicar la presentación oral de casos clínicos estructurados antes del X de [mes]..."></textarea></div>
 </div>
 
 <!-- SCORE PANEL -->
 <div class="score-panel">
   <div>
-    <div class="score-main">
-      <span class="score-big" id="score-total">—</span>
-      <span class="score-denom">/ 5.0</span>
-    </div>
+    <div class="score-main"><span class="score-big" id="score-total">—</span><span class="score-denom">/ 5.0</span></div>
     <div class="score-label" id="score-level">Complete los ítems para calcular la nota</div>
   </div>
   <div class="score-bars">
     <div class="bar-row"><span class="bar-label">I. Conocimientos teóricos</span><div class="bar-track"><div class="bar-fill" id="bar1" style="width:0%;background:#97C459"></div></div><span id="bv1" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
     <div class="bar-row"><span class="bar-label">IIa. Historia clínica</span><div class="bar-track"><div class="bar-fill" id="bar2" style="width:0%;background:#5DCAA5"></div></div><span id="bv2" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
     <div class="bar-row"><span class="bar-label">IIb. Habilidades clínicas</span><div class="bar-track"><div class="bar-fill" id="bar3" style="width:0%;background:#9FE1CB"></div></div><span id="bv3" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
-    <div class="bar-row"><span class="bar-label">IIIa. Quiz escrito</span><div class="bar-track"><div class="bar-fill" id="bar4" style="width:0%;background:#AFA9EC"></div></div><span id="bv4" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
+    <div class="bar-row"><span class="bar-label">IIIa. Quiz escrito</span><div class="bar-track"><div class="bar-fill" id="bar4" style="width:0%;background:#C49BE1"></div></div><span id="bv4" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
     <div class="bar-row"><span class="bar-label">IIIb. Simulación clínica</span><div class="bar-track"><div class="bar-fill" id="bar5" style="width:0%;background:#CECBF6"></div></div><span id="bv5" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
     <div class="bar-row"><span class="bar-label">IV. Responsabilidad médica</span><div class="bar-track"><div class="bar-fill" id="bar6" style="width:0%;background:#FAC775"></div></div><span id="bv6" style="font-size:10px;opacity:.75;min-width:28px;text-align:right">—</span></div>
   </div>
@@ -573,7 +354,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 <div class="send-block no-print">
   <div class="send-title">&#128228; Enviar reporte y registrar en matriz de notas</div>
   <div style="font-size:11px;color:#555;margin-bottom:12px;background:#eef3fa;border:1px solid #cdd8ec;border-radius:6px;padding:8px 12px;line-height:1.6">
-    <strong>Cómo funciona:</strong> Al hacer clic en "Enviar reporte" se envía el correo al estudiante y al evaluador con todas las calificaciones y la retroalimentación. Los datos quedan registrados en Google Sheets automáticamente.
+    <b>Cómo funciona:</b> Al hacer clic en "Enviar reporte" se envía el correo al estudiante <b>con el PDF adjunto</b> y los datos quedan registrados en Google Sheets. "Descargar PDF" genera el PDF directamente en tu dispositivo sin necesidad de conexión al servidor.
   </div>
 
   <div class="send-grid">
@@ -581,31 +362,28 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
     <div class="send-field"><label>Email del evaluador (copia)</label><input id="email_doc" type="email" placeholder="jd.serna@umanizales.edu.co"></div>
   </div>
 
-  <!-- Toggle configuración -->
-  <div style="margin-bottom:10px">
-    <button class="btn-toggle-config" onclick="toggleConfig()" id="btn-config-toggle">&#9881; Mostrar configuración</button>
-  </div>
+  <button class="btn-toggle-config" onclick="toggleConfig()" id="btn-config-toggle">&#9881; Mostrar configuración de servidor</button>
 
   <div id="config-panel" style="display:none;background:#f7f8fb;border:1px solid #cdd3db;border-radius:7px;padding:14px 16px;margin-bottom:12px">
-    <div class="send-grid" style="margin-bottom:10px">
+    <div class="send-grid">
       <div class="send-field">
         <label>URL del Google Apps Script (Web App)</label>
-        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbxqfy3B_icTylekxppzGjvXDaPN5aLjbzDtZYJSGpa9Q2SPXK-ClfIKO2vPqTZeiHA1Vg/exec" style="font-size:11px">
-        <div style="font-size:10px;color:#888;margin-top:3px">Pega aquí la URL de tu Web App después de publicar el script.</div>
+        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbwb2q_O9-5mmD7Sv7QZZ3WU6lTgIGIwhKzwFrA_-2Bdfgo43rB7N0d3GUFCknGPIgVf/exec" style="font-size:11px">
+        <div style="font-size:10px;color:#888;margin-top:3px">Pega aquí la URL de tu Web App después de publicar el GAS script.</div>
       </div>
       <div class="send-field">
         <label>ID de la Google Sheet (matriz de notas)</label>
         <input id="sheet_id" type="text" value="1EuSLIzSogT6yBE2ACFncd4Wp-1h-pQHza3Uv55yFlJ0" style="font-size:11px">
-        <div style="font-size:10px;color:#888;margin-top:3px">El ID está en la URL: <code style="background:#e8ecf1;padding:1px 5px;border-radius:3px;font-size:10px">docs.google.com/spreadsheets/d/<strong>ID_AQUÍ</strong>/edit</code></div>
+        <div style="font-size:10px;color:#888;margin-top:3px">El ID está en la URL: <code style="background:#e8ecf1;padding:1px 5px;border-radius:3px;font-size:10px">spreadsheets/d/<b>ID_AQUÍ</b>/edit</code></div>
       </div>
     </div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-primary" onclick="sendReport()">&#10148; Enviar reporte por email + registrar en Sheets</button>
-    <button class="btn-secondary" onclick="soloSheets()">&#8595; Solo registrar en Sheets</button>
-    <button class="btn-secondary" onclick="downloadReport()">&#8595; Descargar PDF</button>
-    <button class="btn-secondary" onclick="window.print()">&#128438; Imprimir</button>
+    <button class="btn-primary"    onclick="sendReport()">&#10148; Enviar reporte por email (PDF adjunto) + registrar en Sheets</button>
+    <button class="btn-secondary"  onclick="soloSheets()">&#8595; Solo registrar en Sheets</button>
+    <button class="btn-danger"     onclick="downloadPDF()">&#128462; Descargar PDF local</button>
+    <button class="btn-secondary"  onclick="window.print()">&#128438; Imprimir</button>
   </div>
   <div id="status-ok"  class="status-ok"></div>
   <div id="status-err" class="status-err"></div>
@@ -613,15 +391,13 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 
 <!-- FIRMA -->
 <div class="firma-block">
-  <div class="firma-avatar" style="background:none;width:auto;height:auto;border-radius:0">
-    <svg width="44" height="44" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:6px;overflow:hidden">
-      <rect width="54" height="54" fill="#1a2a4a"/>
-      <circle cx="46" cy="10" r="28" fill="#3a6fa8" opacity="0.85"/>
-      <text x="7" y="28" font-family="Arial,sans-serif" font-size="8.2" font-weight="700" fill="white" letter-spacing="0.3">FACULTAD</text>
-      <text x="7" y="37" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE CIENCIAS</text>
-      <text x="7" y="45" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE LA SALUD</text>
-    </svg>
-  </div>
+  <svg width="44" height="44" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:6px;overflow:hidden;flex-shrink:0">
+    <rect width="54" height="54" fill="#1a2a4a"/>
+    <circle cx="46" cy="10" r="28" fill="#3a6fa8" opacity="0.85"/>
+    <text x="7" y="28" font-family="Arial,sans-serif" font-size="8.2" font-weight="700" fill="white" letter-spacing="0.3">FACULTAD</text>
+    <text x="7" y="37" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE CIENCIAS</text>
+    <text x="7" y="45" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE LA SALUD</text>
+  </svg>
   <div class="firma-info">
     <div class="firma-nombre">Dr. Juan David Serna Zuluaga</div>
     <div class="firma-cargo">Médico · Coordinador Cátedra de Semiología Médica</div>
@@ -631,30 +407,26 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
 </div>
 
 </div><!-- /body -->
-
 </div><!-- /page -->
 
 <script>
-/* ── ESTRUCTURA DE ÍTEMS ──
-   id        peso    etiqueta barra
-   cteor     0.30    I. Conocimientos teóricos
-   hc        0.175   IIa. Historia clínica
-   hab       0.175   IIb. Habilidades clínicas
-   quiz      0.15    IIIa. Quiz escrito
-   sim       0.15    IIIb. Simulación clínica
-   resp      0.05    IV. Responsabilidad médica
-*/
+// ─────────────────────────────────────────────────────────────────────────────
+//  CONFIGURACIÓN DE ÍTEMS
+// ─────────────────────────────────────────────────────────────────────────────
 const ITEMS = [
-  {id:'cteor', w:0.30,  bar:1},
-  {id:'hc',    w:0.175, bar:2},
-  {id:'hab',   w:0.175, bar:3},
-  {id:'quiz',  w:0.15,  bar:4},
-  {id:'sim',   w:0.15,  bar:5},
-  {id:'resp',  w:0.05,  bar:6},
+  {id:'cteor', w:0.30,  bar:1, label:'I. Conocimientos teóricos',                           peso:'30%'  },
+  {id:'hc',    w:0.175, bar:2, label:'IIa. Historia clínica',                               peso:'17,5%'},
+  {id:'hab',   w:0.175, bar:3, label:'IIb. Habilidades clínicas en la cabecera',            peso:'17,5%'},
+  {id:'quiz',  w:0.15,  bar:4, label:'IIIa. Quiz escrito',                                  peso:'15%'  },
+  {id:'sim',   w:0.15,  bar:5, label:'IIIb. Evaluación práctica — Simulación Clínica',      peso:'15%'  },
+  {id:'resp',  w:0.05,  bar:6, label:'IV. Responsabilidad médica, actitud e iniciativa',    peso:'5%'   },
 ];
 
 const OC = {s:'cell-s', sa:'cell-sa', ed:'cell-ed', ns:'cell-ns'};
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  LÓGICA DE CALIFICACIÓN
+// ─────────────────────────────────────────────────────────────────────────────
 function sel(id, opt, val){
   document.querySelectorAll(`#g_${id} .likert-cell`).forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll(`#g_${id} .${OC[opt]}`).forEach(c=>c.classList.add('selected'));
@@ -696,6 +468,14 @@ function getVal(id){
   return isNaN(v)?null:Math.min(5,Math.max(0,v));
 }
 
+function getLevelLabel(v){
+  if(v===null||isNaN(v))return'—';
+  if(v>=4.5)return'Sobresaliente';
+  if(v>=3.5)return'Satisfactorio';
+  if(v>=3.0)return'En desarrollo';
+  return'No satisfactorio';
+}
+
 function updateScore(){
   let num=0, den=0;
   ITEMS.forEach(item=>{
@@ -721,286 +501,313 @@ function updateScore(){
   }
 }
 
-function buildPDF(){
-  const d={
-    nombre:document.getElementById('f_nombre').value||'—',
-    codigo:document.getElementById('f_codigo').value||'—',
-    cohorte:document.getElementById('f_cohorte').value||'—',
-    semestre:document.getElementById('f_semestre').value||'—',
-    sede:document.getElementById('f_sede').value||'—',
-    periodo:document.getElementById('f_periodo').value||'—',
-    fecha_ini:document.getElementById('f_fecha_ini').value||'—',
-    fecha_fin:document.getElementById('f_fecha_fin').value||'—',
-    docente:document.getElementById('f_docente').value||'—',
-    fortalezas:document.getElementById('retro_fortalezas').value||'—',
-    brechas:document.getElementById('retro_brechas').value||'—',
-    compromisos:document.getElementById('retro_compromisos').value||'—',
-    final:document.getElementById('score-total').textContent,
-    level:document.getElementById('score-level').textContent,
-  };
-
-  const LABELS={
-    cteor:['I. Conocimientos teóricos','30%'],
-    hc:['IIa. Historia clínica','17,5%'],
-    hab:['IIb. Habilidades clínicas en la cabecera del paciente','17,5%'],
-    quiz:['IIIa. Quiz escrito','15%'],
-    sim:['IIIb. Evaluación práctica — Simulación Clínica','15%'],
-    resp:['IV. Responsabilidad médica, actitud, iniciativa e interés','5%'],
-  };
-  const OBGS={5:'Sobresaliente',4:'Satisfactorio',3:'En desarrollo',1:'No satisfactorio'};
-  const BG={Sobresaliente:'#d4edda',Satisfactorio:'#d0e8f8','En desarrollo':'#fdecd1','No satisfactorio':'#fddede','Sin calificar':'#f0f0f0'};
-  const COL={Sobresaliente:'#2a6a3a',Satisfactorio:'#135080','En desarrollo':'#7a4800','No satisfactorio':'#8b1e1e','Sin calificar':'#888'};
-
-  const rows=ITEMS.map(item=>{
-    const v=getVal(item.id);
-    const lbl=v!==null?(v>=4.5?'Sobresaliente':v>=3.5?'Satisfactorio':v>=3.0?'En desarrollo':'No satisfactorio')+` (${v.toFixed(1)})` :'Sin calificar';
-    const key=lbl.split(' (')[0];
-    const [name,weight]=LABELS[item.id];
-    return `<tr>
-      <td style="padding:6px 10px;font-size:11px;border-bottom:1px solid #eee;color:#222">${name}</td>
-      <td style="padding:6px 10px;font-size:11px;border-bottom:1px solid #eee;text-align:center;color:#888">${weight}</td>
-      <td style="padding:6px 10px;font-size:11px;border-bottom:1px solid #eee;text-align:center">
-        <span style="background:${BG[key]||'#f0f0f0'};color:${COL[key]||'#888'};padding:2px 8px;border-radius:8px;font-weight:700">${lbl}</span>
-      </td></tr>`;
-  }).join('');
-
-  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-  <title>Rúbrica Semiología — ${d.nombre}</title>
-  <style>
-    body{font-family:Arial,sans-serif;margin:28px;color:#1a1a1a;font-size:12px}
-    .hdr{background:#1a3a5c;color:white;padding:14px 18px;border-radius:6px;margin-bottom:16px;display:flex;gap:14px;align-items:center}
-    .hdr-logo{background:rgba(255,255,255,.15);border-radius:6px;padding:6px 10px;font-size:14px;font-weight:700;text-align:center;line-height:1.3}
-    h1{font-size:15px;font-weight:700;color:white;margin:0 0 2px}
-    h2{font-size:11px;font-weight:400;color:rgba(255,255,255,.8);margin:0 0 2px}
-    h3{font-size:10px;font-weight:400;color:rgba(255,255,255,.6);margin:0}
-    .sec{font-size:10px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em;margin:14px 0 6px;border-bottom:1px solid #d0e4f5;padding-bottom:4px}
-    table{border-collapse:collapse;width:100%}
-    td{vertical-align:top;padding:4px 8px;font-size:11px}
-    .lbl{font-size:10px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
-    .val{font-size:12px;color:#1a1a1a}
-    .retro{background:#f7f8fa;border:1px solid #dde2ea;border-radius:5px;padding:8px 10px;font-size:11px;line-height:1.6;margin-bottom:6px;white-space:pre-wrap}
-    .score-box{background:#1a3a5c;color:white;border-radius:6px;padding:12px 16px;display:flex;align-items:center;gap:14px;margin:14px 0}
-    .score-big{font-size:38px;font-weight:700;line-height:1}
-    .score-den{font-size:16px;opacity:.7}
-    .score-lbl{font-size:12px;opacity:.85;margin-top:3px}
-    .footer{font-size:9px;color:#bbb;text-align:center;margin-top:18px;padding-top:8px;border-top:1px solid #eee}
-  </style></head><body>
-  <div class="hdr">
-    <div class="hdr-logo" style="background:none;padding:0;min-width:auto">
-      <svg width="48" height="48" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg" style="display:block;border-radius:6px;overflow:hidden">
-        <rect width="54" height="54" fill="#1a2a4a"/>
-        <circle cx="46" cy="10" r="28" fill="#3a6fa8" opacity="0.85"/>
-        <text x="7" y="28" font-family="Arial,sans-serif" font-size="8.2" font-weight="700" fill="white" letter-spacing="0.3">FACULTAD</text>
-        <text x="7" y="37" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE CIENCIAS</text>
-        <text x="7" y="45" font-family="Arial,sans-serif" font-size="6.2" font-weight="400" fill="white" letter-spacing="0.2">DE LA SALUD</text>
-      </svg>
-    </div>
-    <div><h1>Rúbrica de Evaluación — Semiología Médica</h1>
-    <h2>Facultad de Ciencias de la Salud &middot; Universidad de Manizales</h2>
-    <h3>Dr. Juan David Serna Zuluaga &middot; Coordinador Cátedra de Semiología &middot; Mg. Educación y Transformación Digital</h3></div>
-  </div>
-
-  <div class="sec">Datos de identificación</div>
-  <table><tr>
-    <td width="50%"><div class="lbl">Estudiante</div><div class="val">${d.nombre}</div></td>
-    <td><div class="lbl">Código estudiantil</div><div class="val">${d.codigo}</div></td>
-  </tr><tr>
-    <td><div class="lbl">Cohorte / Rotación</div><div class="val">${d.cohorte} / ${d.semestre}</div></td>
-    <td><div class="lbl">Sede / Servicio hospitalario</div><div class="val">${d.sede}</div></td>
-  </tr><tr>
-    <td><div class="lbl">Período académico</div><div class="val">${d.periodo}</div></td>
-    <td><div class="lbl">Fechas de rotación</div><div class="val">${d.fecha_ini} → ${d.fecha_fin}</div></td>
-  </tr><tr>
-    <td colspan="2"><div class="lbl">Docente evaluador</div><div class="val">${d.docente}</div></td>
-  </tr></table>
-
-  <div class="sec">Calificación por componentes</div>
-  <table>
-    <tr style="background:#f4f6f9">
-      <td style="padding:6px 10px;font-size:10px;font-weight:700;color:#555;text-transform:uppercase">Componente</td>
-      <td style="padding:6px 10px;font-size:10px;font-weight:700;color:#555;text-transform:uppercase;text-align:center">Peso</td>
-      <td style="padding:6px 10px;font-size:10px;font-weight:700;color:#555;text-transform:uppercase;text-align:center">Calificación</td>
-    </tr>
-    ${rows}
-  </table>
-
-  <div class="score-box">
-    <div>
-      <div style="display:flex;align-items:baseline;gap:6px">
-        <span class="score-big">${d.final}</span><span class="score-den">/ 5.0</span>
-      </div>
-      <div class="score-lbl">${d.level}</div>
-    </div>
-  </div>
-
-  <div class="sec">Retroalimentación docente</div>
-  <div class="lbl">Aspectos de dominio y desempeño destacado</div>
-  <div class="retro">${d.fortalezas}</div>
-  <div class="lbl">Brechas observadas y estrategias de mejora</div>
-  <div class="retro">${d.brechas}</div>
-  <div class="lbl">Compromisos del estudiante</div>
-  <div class="retro">${d.compromisos}</div>
-
-  <div class="footer">Generado por el Sistema de Evaluación · Cátedra de Semiología Médica · Facultad de Ciencias de la Salud · Universidad de Manizales · ${new Date().toLocaleDateString('es-CO')}</div>
-  </body></html>`;
-}
-
+// ─────────────────────────────────────────────────────────────────────────────
+//  ESTADO Y CONFIG
+// ─────────────────────────────────────────────────────────────────────────────
 function toggleConfig(){
   const panel=document.getElementById('config-panel');
   const btn=document.getElementById('btn-config-toggle');
   if(panel.style.display==='none'){panel.style.display='block';btn.textContent='▲ Ocultar configuración';}
-  else{panel.style.display='none';btn.textContent='⚙ Mostrar configuración';}
+  else{panel.style.display='none';btn.textContent='⚙ Mostrar configuración de servidor';}
 }
 
 function showStatus(type, msg){
   const ok=document.getElementById('status-ok');
   const err=document.getElementById('status-err');
   ok.style.display='none'; err.style.display='none';
-  if(type==='ok'){ok.textContent=msg;ok.style.display='block';setTimeout(()=>{ok.style.display='none';},8000);}
-  else{err.textContent=msg;err.style.display='block';setTimeout(()=>{err.style.display='none';},8000);}
+  if(type==='ok'){ok.textContent=msg;ok.style.display='block';setTimeout(()=>ok.style.display='none',8000);}
+  else{err.textContent=msg;err.style.display='block';setTimeout(()=>err.style.display='none',8000);}
 }
 
 function getPayload(){
   return {
-    nombre:document.getElementById('f_nombre').value||'—',
-    codigo:document.getElementById('f_codigo').value||'—',
-    cohorte:document.getElementById('f_cohorte').value||'—',
-    semestre:document.getElementById('f_semestre').value||'—',
-    sede:document.getElementById('f_sede').value||'—',
-    periodo:document.getElementById('f_periodo').value||'—',
+    action:'sendOnly',
+    nombre:   document.getElementById('f_nombre').value||'—',
+    codigo:   document.getElementById('f_codigo').value||'—',
+    cohorte:  document.getElementById('f_cohorte').value||'—',
+    semestre: document.getElementById('f_semestre').value||'—',
+    sede:     document.getElementById('f_sede').value||'—',
+    periodo:  document.getElementById('f_periodo').value||'—',
     fecha_ini:document.getElementById('f_fecha_ini').value||'—',
     fecha_fin:document.getElementById('f_fecha_fin').value||'—',
-    docente:document.getElementById('f_docente').value||'—',
+    docente:  document.getElementById('f_docente').value||'—',
     email_est:document.getElementById('email_est').value||'',
     email_doc:document.getElementById('email_doc').value||'',
-    nota_cteor:getVal('cteor')||'',
-    nota_hc:getVal('hc')||'',
-    nota_hab:getVal('hab')||'',
-    nota_quiz:getVal('quiz')||'',
-    nota_sim:getVal('sim')||'',
-    nota_resp:getVal('resp')||'',
+    nota_cteor:getVal('cteor')??'',
+    nota_hc:   getVal('hc')??'',
+    nota_hab:  getVal('hab')??'',
+    nota_quiz: getVal('quiz')??'',
+    nota_sim:  getVal('sim')??'',
+    nota_resp: getVal('resp')??'',
     nota_final:document.getElementById('score-total').textContent,
-    nivel:document.getElementById('score-level').textContent,
-    fortalezas:document.getElementById('retro_fortalezas').value||'',
-    brechas:document.getElementById('retro_brechas').value||'',
-    compromisos:document.getElementById('retro_compromisos').value||'',
-    fecha_registro:new Date().toLocaleDateString('es-CO'),
+    nivel:     document.getElementById('score-level').textContent,
+    fortalezas:  document.getElementById('retro_fortalezas').value||'',
+    brechas:     document.getElementById('retro_brechas').value||'',
+    compromisos: document.getElementById('retro_compromisos').value||'',
+    sheetId:   document.getElementById('sheet_id')?.value||'',
   };
 }
 
-// ── ENVIAR REPORTE POR EMAIL vía GAS ──
+// ─────────────────────────────────────────────────────────────────────────────
+//  ENVIAR REPORTE POR EMAIL + REGISTRAR EN SHEETS (vía GAS)
+// ─────────────────────────────────────────────────────────────────────────────
 function sendReport(){
-  const email    = document.getElementById('email_est').value.trim();
+  const gasUrl  = document.getElementById('gas_url')?.value.trim();
+  const emailEst = document.getElementById('email_est').value.trim();
   const emailDoc = document.getElementById('email_doc').value.trim();
-  const gasUrl   = document.getElementById('gas_url').value.trim();
 
-  if(!email){ showStatus('err','⚠ Ingresa el email institucional del estudiante.'); return; }
-  if(!gasUrl){ showStatus('err','⚠ Ingresa la URL del Google Apps Script en "Mostrar configuración".'); return; }
+  if(!emailEst){ showStatus('err','⚠ Ingresa el email institucional del estudiante.'); return; }
+  if(!gasUrl){
+    // Mostrar panel config si falta URL
+    document.getElementById('config-panel').style.display='block';
+    document.getElementById('btn-config-toggle').textContent='▲ Ocultar configuración';
+    showStatus('err','⚠ Ingresa la URL del Google Apps Script en el panel de configuración.');
+    return;
+  }
 
   showStatus('ok','⏳ Enviando reporte… espera unos segundos.');
 
-  const payload  = getPayload();
-  payload.action = 'sendOnly';
-  const params   = new URLSearchParams();
-  Object.keys(payload).forEach(k => params.append(k, String(payload[k]||'')));
+  const payload = getPayload();
+  payload.action = 'sendAndRegister';
+  const params = new URLSearchParams();
+  Object.keys(payload).forEach(k => params.append(k, String(payload[k]??'')));
   const url = gasUrl + '?' + params.toString();
 
-  // Intento 1: fetch normal (lee la respuesta si no hay CORS)
   fetch(url, {method:'GET'})
-    .then(function(r){ return r.json(); })
-    .then(function(json){
+    .then(r => r.json())
+    .then(json => {
       if(json.status === 'ok'){
-        showStatus('ok','✓ Correo enviado a ' + email
+        showStatus('ok','✅ Correo enviado a ' + emailEst
           + (emailDoc ? ' · Copia a ' + emailDoc : '')
-          + ' · Registrado en Sheets ✓');
+          + ' con PDF adjunto · Registrado en Sheets ✓');
       } else {
         showStatus('err','Error del servidor: ' + (json.message||'desconocido'));
       }
     })
-    .catch(function(){
-      // Si CORS bloquea la lectura, intento 2: no-cors (el GAS igual lo procesa)
+    .catch(() => {
+      // Fallback no-cors (GAS igual lo procesa)
       fetch(url, {method:'GET', mode:'no-cors'})
-        .then(function(){
-          showStatus('ok','✓ Solicitud enviada a ' + email
-            + (emailDoc ? ' · Copia a ' + emailDoc : '')
-            + ' · El correo llegará en unos segundos ✓');
-        })
-        .catch(function(err){
-          showStatus('err','Error de conexión: ' + err.message);
-        });
+        .then(() => showStatus('ok','✅ Solicitud enviada · El correo con PDF adjunto llegará en unos segundos.'))
+        .catch(err => showStatus('err','Error de conexión: ' + err.message));
     });
 }
 
-// ── SOLO REGISTRAR EN SHEETS ──
+// ─────────────────────────────────────────────────────────────────────────────
+//  SOLO REGISTRAR EN SHEETS
+// ─────────────────────────────────────────────────────────────────────────────
 function soloSheets(){
-  const gasUrl = document.getElementById('gas_url').value.trim();
-  if(!gasUrl){ showStatus('err','⚠ Ingresa la URL del Google Apps Script.'); return; }
+  const gasUrl = document.getElementById('gas_url')?.value.trim();
+  if(!gasUrl){
+    document.getElementById('config-panel').style.display='block';
+    document.getElementById('btn-config-toggle').textContent='▲ Ocultar configuración';
+    showStatus('err','⚠ Ingresa la URL del Google Apps Script.'); return;
+  }
   showStatus('ok','⏳ Registrando en Sheets…');
-  const payload  = getPayload();
+  const payload = getPayload();
   payload.action = 'registerOnly';
-  const params   = new URLSearchParams();
-  Object.keys(payload).forEach(k => params.append(k, String(payload[k]||'')));
+  const params = new URLSearchParams();
+  Object.keys(payload).forEach(k => params.append(k, String(payload[k]??'')));
   fetch(gasUrl + '?' + params.toString(), {method:'GET', mode:'no-cors'})
-    .then(function(){ showStatus('ok','✓ Datos registrados en Google Sheets.'); })
-    .catch(function(e){ showStatus('err','Error: ' + e.message); });
+    .then(() => showStatus('ok','✅ Datos registrados en Google Sheets.'))
+    .catch(e => showStatus('err','Error: ' + e.message));
 }
 
-// ── DESCARGAR PDF REAL ──
-function downloadReport(){
-  const nombre  = document.getElementById('f_nombre').value || 'Estudiante';
+// ─────────────────────────────────────────────────────────────────────────────
+//  DESCARGAR PDF LOCAL — usa jsPDF + html2canvas directamente en el cliente
+//  Sin necesidad de servidor ni URL externa
+// ─────────────────────────────────────────────────────────────────────────────
+function buildReporteHTML(){
+  const nombre    = document.getElementById('f_nombre').value    || '—';
+  const codigo    = document.getElementById('f_codigo').value    || '—';
+  const cohorte   = document.getElementById('f_cohorte').value   || '—';
+  const semestre  = document.getElementById('f_semestre').value  || '—';
+  const sede      = document.getElementById('f_sede').value      || '—';
+  const periodo   = document.getElementById('f_periodo').value   || '—';
+  const fecha_ini = document.getElementById('f_fecha_ini').value || '—';
+  const fecha_fin = document.getElementById('f_fecha_fin').value || '—';
+  const docente   = document.getElementById('f_docente').value   || '—';
+  const fortalezas   = document.getElementById('retro_fortalezas').value  || '(No registrado)';
+  const brechas      = document.getElementById('retro_brechas').value     || '(No registrado)';
+  const compromisos  = document.getElementById('retro_compromisos').value || '(No registrado)';
+  const notaFinal = document.getElementById('score-total').textContent;
+  const nivel     = document.getElementById('score-level').textContent;
+  const nf = parseFloat(notaFinal)||0;
+  const estado = nf>=3.0 ? '✓ APRUEBA' : '✕ REPRUEBA';
+
+  let cn='#C27D00', bg='#FFF8E1';
+  if(nf>=4.5){cn='#2a6a3a';bg='#E8F5E9';}
+  else if(nf>=3.5){cn='#1a4f80';bg='#E3F2FD';}
+  else if(nf>=3.0){cn='#843C00';bg='#FFF3E0';}
+  else if(!isNaN(nf)&&nf>0){cn='#922B21';bg='#FFEBEE';}
+
+  function lvlBg(v){
+    if(v===null)return{bg:'#F5F5F5',col:'#9E9E9E'};
+    if(v>=4.5)return{bg:'#E8F5E9',col:'#2a6a3a'};
+    if(v>=3.5)return{bg:'#E3F2FD',col:'#1a4f80'};
+    if(v>=3.0)return{bg:'#FFF3E0',col:'#843C00'};
+    return{bg:'#FFEBEE',col:'#922B21'};
+  }
+
+  let filas='';
+  ITEMS.forEach((item,i)=>{
+    const v=getVal(item.id);
+    const lbl=getLevelLabel(v);
+    const c=lvlBg(v);
+    const rb=i%2===0?'#FFFFFF':'#F8F9FA';
+    const vStr=v!==null?v.toFixed(1)+' — '+lbl:'—';
+    filas+=`<tr style="background:${rb}">
+      <td style="padding:7px 12px;font-size:11px;color:#333;border-bottom:1px solid #ECEFF1">${item.label}</td>
+      <td style="padding:7px 12px;text-align:center;font-size:10px;color:#888;border-bottom:1px solid #ECEFF1">${item.peso}</td>
+      <td style="padding:7px 12px;text-align:center;border-bottom:1px solid #ECEFF1">
+        <span style="background:${c.bg};color:${c.col};padding:2px 9px;border-radius:10px;font-weight:700;font-size:11px">${vStr}</span>
+      </td></tr>`;
+  });
+
+  function retroBlk(titulo,texto){
+    return`<div style="margin-bottom:12px">
+      <div style="font-size:9px;font-weight:700;color:#546E7A;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${titulo}</div>
+      <div style="background:#F8F9FA;border-left:3px solid #1a3a5c;padding:9px 12px;font-size:11px;color:#333;line-height:1.7;white-space:pre-wrap;border-radius:0 4px 4px 0">${texto}</div>
+    </div>`;
+  }
+
+  const today = new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#1a1a1a}
+    .wrap{width:700px;margin:0 auto}
+  </style></head><body><div class="wrap">
+
+  <div style="background:#1a3a5c;padding:20px 24px">
+    <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:#90CAF9;margin-bottom:4px">UNIVERSIDAD DE MANIZALES · FACULTAD DE CIENCIAS DE LA SALUD</div>
+    <div style="font-size:18px;font-weight:700;color:#FFF;margin-bottom:3px">Reporte de Evaluación — Semiología Médica</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.6)">Cátedra de Semiología · Período ${periodo}</div>
+  </div>
+
+  <div style="background:#EBF3FB;padding:14px 24px;font-size:11px">
+    <table style="width:100%;border-collapse:collapse">
+      <tr><td style="padding:3px 8px 3px 0;width:50%"><b style="color:#1a3a5c">Estudiante:</b> ${nombre}</td><td><b style="color:#1a3a5c">Código:</b> ${codigo}</td></tr>
+      <tr><td style="padding:3px 8px 3px 0"><b style="color:#1a3a5c">Cohorte:</b> ${cohorte}</td><td><b style="color:#1a3a5c">Rotación:</b> ${semestre}</td></tr>
+      <tr><td style="padding:3px 8px 3px 0"><b style="color:#1a3a5c">Sede:</b> ${sede}</td><td><b style="color:#1a3a5c">Período:</b> ${periodo}</td></tr>
+      <tr><td style="padding:3px 8px 3px 0"><b style="color:#1a3a5c">Inicio:</b> ${fecha_ini}</td><td><b style="color:#1a3a5c">Fin:</b> ${fecha_fin}</td></tr>
+      <tr><td colspan="2" style="padding:3px 0"><b style="color:#1a3a5c">Docente evaluador:</b> ${docente}</td></tr>
+    </table>
+  </div>
+
+  <div style="background:${bg};padding:18px 24px;text-align:center;border-bottom:3px solid ${cn}">
+    <div style="font-size:9px;font-weight:700;letter-spacing:1px;color:${cn};margin-bottom:5px">NOTA FINAL DE ROTACIÓN</div>
+    <div style="font-size:44px;font-weight:700;color:${cn};line-height:1">${notaFinal==='—'?'—':parseFloat(notaFinal).toFixed(2)}</div>
+    <div style="font-size:13px;font-weight:600;color:${cn};margin-top:4px">${nivel}</div>
+    <div style="font-size:12px;font-weight:700;color:${cn};margin-top:2px">${estado}</div>
+  </div>
+
+  <table style="width:100%;border-collapse:collapse">
+    <tr style="background:#1a3a5c">
+      <th style="padding:8px 12px;text-align:left;font-size:10px;color:#FFF">COMPONENTE</th>
+      <th style="padding:8px 12px;text-align:center;font-size:10px;color:#FFF;width:65px">PESO</th>
+      <th style="padding:8px 12px;text-align:center;font-size:10px;color:#FFF;width:165px">CALIFICACIÓN</th>
+    </tr>
+    ${filas}
+  </table>
+
+  <div style="padding:18px 24px">
+    <div style="font-size:9px;font-weight:700;color:#1a3a5c;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #1a3a5c;padding-bottom:5px;margin-bottom:12px">Retroalimentación docente</div>
+    ${retroBlk('Aspectos de dominio y desempeño destacado',fortalezas)}
+    ${retroBlk('Brechas observadas y estrategias de mejora',brechas)}
+    ${retroBlk('Compromisos del estudiante',compromisos)}
+  </div>
+
+  <div style="background:#1a3a5c;padding:14px 24px">
+    <div style="font-size:13px;font-weight:700;color:#FFF">Dr. Juan David Serna Zuluaga</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.75)">Médico · Coordinador Cátedra de Semiología Médica · Mg. Educación y Transformación Digital</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.75)">Facultad de Ciencias de la Salud · Universidad de Manizales · ${periodo}</div>
+    <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:6px">Generado: ${today}</div>
+  </div>
+
+  </div></body></html>`;
+}
+
+async function downloadPDF(){
+  const nombre  = document.getElementById('f_nombre').value  || 'Estudiante';
   const periodo = document.getElementById('f_periodo').value || '2026-1';
   const fname   = 'Rubrica_Semiologia_' + nombre.replace(/\s+/g,'_') + '_' + periodo + '.pdf';
 
-  showStatus('ok','⏳ Generando PDF… espera unos segundos.');
+  // Mostrar overlay
+  const overlay = document.getElementById('pdf-overlay');
+  const msgEl   = document.getElementById('pdf-msg');
+  overlay.classList.add('active');
+  msgEl.textContent = 'Preparando reporte…';
 
-  // Crear contenedor temporal con el HTML del reporte
-  const container = document.createElement('div');
-  container.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:white;font-family:Arial,sans-serif;font-size:12px;color:#1a1a1a;z-index:-1';
-  container.innerHTML = buildPDF();
-  document.body.appendChild(container);
+  try {
+    // Crear iframe oculto con el HTML del reporte
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:720px;height:1px;opacity:0;border:none';
+    document.body.appendChild(iframe);
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(buildReporteHTML());
+    iframe.contentDocument.close();
 
-  setTimeout(function(){
-    window.html2canvas(container, {
+    // Esperar a que el iframe renderice
+    await new Promise(r => setTimeout(r, 600));
+
+    msgEl.textContent = 'Renderizando páginas…';
+
+    // Ajustar alto al contenido
+    const contentH = iframe.contentDocument.body.scrollHeight;
+    iframe.style.height = contentH + 'px';
+
+    await new Promise(r => setTimeout(r, 200));
+
+    msgEl.textContent = 'Generando PDF…';
+
+    const canvas = await window.html2canvas(iframe.contentDocument.body, {
       scale: 2,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff',
-      width: 794,
-      windowWidth: 794,
-      logging: false
-    }).then(function(canvas){
-      document.body.removeChild(container);
-
-      const { jsPDF } = window.jspdf;
-      const pdf    = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-      const pageW  = 210;
-      const pageH  = 297;
-      const imgW   = pageW;
-      const imgH   = (canvas.height * imgW) / canvas.width;
-      const imgData = canvas.toDataURL('image/jpeg', 0.92);
-
-      let posY = 0;
-      while(posY < imgH){
-        if(posY > 0) pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, -posY, imgW, imgH);
-        posY += pageH;
-      }
-
-      pdf.save(fname);
-      showStatus('ok','✓ PDF descargado correctamente: ' + fname);
-    }).catch(function(err){
-      document.body.removeChild(container);
-      // Fallback: descargar como HTML imprimible
-      const blob = new Blob([buildPDF()], {type:'text/html;charset=utf-8'});
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url;
-      a.download = nombre.replace(/\s+/g,'_') + '_' + periodo + '_rubrica.html';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showStatus('ok','✓ Descargado como HTML — ábrelo en Chrome → Ctrl+P → Guardar como PDF.');
+      width: 720,
+      windowWidth: 720,
+      scrollY: 0,
+      logging: false,
     });
-  }, 300);
+
+    document.body.removeChild(iframe);
+
+    const { jsPDF } = window.jspdf;
+    const pdf   = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    const pageW = 210;
+    const pageH = 297;
+    const margin = 8;
+    const usableW = pageW - margin * 2;
+    const imgH = (canvas.height * usableW) / canvas.width;
+    const imgData = canvas.toDataURL('image/jpeg', 0.93);
+
+    let posY = 0;
+    let page = 0;
+    while(posY < imgH){
+      if(page > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', margin, margin - posY, usableW, imgH);
+      posY += (pageH - margin * 2);
+      page++;
+    }
+
+    pdf.save(fname);
+    overlay.classList.remove('active');
+    showStatus('ok', '✅ PDF descargado: ' + fname);
+
+  } catch(err) {
+    overlay.classList.remove('active');
+    // Fallback: descargar como HTML
+    const blob = new Blob([buildReporteHTML()], {type:'text/html;charset=utf-8'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = nombre.replace(/\s+/g,'_') + '_' + periodo + '_rubrica.html';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showStatus('ok','📄 Descargado como HTML — Ctrl+P → Guardar como PDF para convertirlo.');
+  }
 }
 </script>
 </body>
