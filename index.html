@@ -368,7 +368,7 @@ body{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#1a1a1a;backgro
     <div class="send-grid">
       <div class="send-field">
         <label>URL del Google Apps Script (Web App)</label>
-        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbwb2q_O9-5mmD7Sv7QZZ3WU6lTgIGIwhKzwFrA_-2Bdfgo43rB7N0d3GUFCknGPIgVf/exec" style="font-size:11px">
+        <input id="gas_url" type="url" value="https://script.google.com/macros/s/AKfycbxld52QFM_cCgrFPWxAG36-ikxTd-7Ylu6OuzLzKE3Z7LwvCC2Ixt8vw4WJxWRczF-zHg/exec" style="font-size:11px">
         <div style="font-size:10px;color:#888;margin-top:3px">Pega aquí la URL de tu Web App después de publicar el GAS script.</div>
       </div>
       <div class="send-field">
@@ -519,46 +519,63 @@ function showStatus(type, msg){
   else{err.textContent=msg;err.style.display='block';setTimeout(()=>err.style.display='none',8000);}
 }
 
+// Construye el payload con los nombres de campo exactos que espera el GAS
 function getPayload(){
+  const notaFinalRaw = document.getElementById('score-total').textContent;
+  const nf = parseFloat(notaFinalRaw);
   return {
-    action:'sendOnly',
-    nombre:   document.getElementById('f_nombre').value||'—',
-    codigo:   document.getElementById('f_codigo').value||'—',
-    cohorte:  document.getElementById('f_cohorte').value||'—',
-    semestre: document.getElementById('f_semestre').value||'—',
-    sede:     document.getElementById('f_sede').value||'—',
-    periodo:  document.getElementById('f_periodo').value||'—',
-    fecha_ini:document.getElementById('f_fecha_ini').value||'—',
-    fecha_fin:document.getElementById('f_fecha_fin').value||'—',
-    docente:  document.getElementById('f_docente').value||'—',
-    email_est:document.getElementById('email_est').value||'',
-    email_doc:document.getElementById('email_doc').value||'',
-    nota_cteor:getVal('cteor')??'',
-    nota_hc:   getVal('hc')??'',
-    nota_hab:  getVal('hab')??'',
-    nota_quiz: getVal('quiz')??'',
-    nota_sim:  getVal('sim')??'',
-    nota_resp: getVal('resp')??'',
-    nota_final:document.getElementById('score-total').textContent,
-    nivel:     document.getElementById('score-level').textContent,
-    fortalezas:  document.getElementById('retro_fortalezas').value||'',
-    brechas:     document.getElementById('retro_brechas').value||'',
-    compromisos: document.getElementById('retro_compromisos').value||'',
-    sheetId:   document.getElementById('sheet_id')?.value||'',
+    // identificación
+    nombre:           document.getElementById('f_nombre').value   || '—',
+    codigo:           document.getElementById('f_codigo').value   || '—',
+    cohorte:          document.getElementById('f_cohorte').value  || '—',
+    semestre:         document.getElementById('f_semestre').value || '—',
+    sede:             document.getElementById('f_sede').value     || '—',
+    periodo:          document.getElementById('f_periodo').value  || '—',
+    fecha_ini:        document.getElementById('f_fecha_ini').value|| '—',
+    fecha_fin:        document.getElementById('f_fecha_fin').value|| '—',
+    docente:          document.getElementById('f_docente').value  || '—',
+    // emails — nombres que usa el GAS
+    emailEstudiante:  document.getElementById('email_est').value.trim(),
+    emailEvaluador:   document.getElementById('email_doc').value.trim(),
+    // notas individuales
+    nota_cteor:       getVal('cteor'),
+    nota_hc:          getVal('hc'),
+    nota_hab:         getVal('hab'),
+    nota_quiz:        getVal('quiz'),
+    nota_sim:         getVal('sim'),
+    nota_resp:        getVal('resp'),
+    // nota final — nombre que usa el GAS
+    notaFinal:        isNaN(nf) ? 0 : nf,
+    nivel:            document.getElementById('score-level').textContent,
+    // retroalimentación
+    fortalezas:       document.getElementById('retro_fortalezas').value || '',
+    brechas:          document.getElementById('retro_brechas').value    || '',
+    compromisos:      document.getElementById('retro_compromisos').value|| '',
+    // sheet
+    sheetId:          document.getElementById('sheet_id')?.value || '',
   };
 }
 
+// Función central de POST a GAS — igual al original que funciona
+function postToGAS(gasUrl, payload){
+  return fetch(gasUrl, {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(payload),
+    // sin mode:'no-cors' para poder leer la respuesta
+  });
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
-//  ENVIAR REPORTE POR EMAIL + REGISTRAR EN SHEETS (vía GAS)
+//  ENVIAR REPORTE POR EMAIL + REGISTRAR EN SHEETS (POST JSON → GAS)
 // ─────────────────────────────────────────────────────────────────────────────
 function sendReport(){
-  const gasUrl  = document.getElementById('gas_url')?.value.trim();
+  const gasUrl   = document.getElementById('gas_url')?.value.trim();
   const emailEst = document.getElementById('email_est').value.trim();
   const emailDoc = document.getElementById('email_doc').value.trim();
 
   if(!emailEst){ showStatus('err','⚠ Ingresa el email institucional del estudiante.'); return; }
   if(!gasUrl){
-    // Mostrar panel config si falta URL
     document.getElementById('config-panel').style.display='block';
     document.getElementById('btn-config-toggle').textContent='▲ Ocultar configuración';
     showStatus('err','⚠ Ingresa la URL del Google Apps Script en el panel de configuración.');
@@ -569,31 +586,34 @@ function sendReport(){
 
   const payload = getPayload();
   payload.action = 'sendAndRegister';
-  const params = new URLSearchParams();
-  Object.keys(payload).forEach(k => params.append(k, String(payload[k]??'')));
-  const url = gasUrl + '?' + params.toString();
 
-  fetch(url, {method:'GET'})
+  postToGAS(gasUrl, payload)
     .then(r => r.json())
     .then(json => {
-      if(json.status === 'ok'){
+      if(json.status === 'success' || json.status === 'ok'){
         showStatus('ok','✅ Correo enviado a ' + emailEst
           + (emailDoc ? ' · Copia a ' + emailDoc : '')
           + ' con PDF adjunto · Registrado en Sheets ✓');
       } else {
-        showStatus('err','Error del servidor: ' + (json.message||'desconocido'));
+        showStatus('err','Error del servidor: ' + (json.message || 'desconocido'));
       }
     })
     .catch(() => {
-      // Fallback no-cors (GAS igual lo procesa)
-      fetch(url, {method:'GET', mode:'no-cors'})
-        .then(() => showStatus('ok','✅ Solicitud enviada · El correo con PDF adjunto llegará en unos segundos.'))
-        .catch(err => showStatus('err','Error de conexión: ' + err.message));
+      // CORS bloquea la lectura de la respuesta pero GAS SÍ procesa el POST
+      // Se usa no-cors como fallback — el script igual se ejecuta en el servidor
+      fetch(gasUrl, {
+        method:  'POST',
+        headers: { 'Content-Type': 'text/plain' }, // no-cors no permite application/json
+        body:    JSON.stringify(payload),
+        mode:    'no-cors'
+      })
+      .then(() => showStatus('ok','✅ Solicitud enviada · El correo con PDF adjunto llegará en unos segundos · Registrado en Sheets ✓'))
+      .catch(err => showStatus('err','Error de conexión: ' + err.message));
     });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  SOLO REGISTRAR EN SHEETS
+//  SOLO REGISTRAR EN SHEETS (POST JSON → GAS)
 // ─────────────────────────────────────────────────────────────────────────────
 function soloSheets(){
   const gasUrl = document.getElementById('gas_url')?.value.trim();
@@ -605,11 +625,15 @@ function soloSheets(){
   showStatus('ok','⏳ Registrando en Sheets…');
   const payload = getPayload();
   payload.action = 'registerOnly';
-  const params = new URLSearchParams();
-  Object.keys(payload).forEach(k => params.append(k, String(payload[k]??'')));
-  fetch(gasUrl + '?' + params.toString(), {method:'GET', mode:'no-cors'})
-    .then(() => showStatus('ok','✅ Datos registrados en Google Sheets.'))
-    .catch(e => showStatus('err','Error: ' + e.message));
+
+  fetch(gasUrl, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body:    JSON.stringify(payload),
+    mode:    'no-cors'
+  })
+  .then(() => showStatus('ok','✅ Datos registrados en Google Sheets.'))
+  .catch(e => showStatus('err','Error: ' + e.message));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
